@@ -7,6 +7,10 @@
  */
 
 import React, { useRef } from 'react';
+import CameraView from './RCTCameraView.js';
+import { NativeModules } from 'react-native';
+
+
 import {
   SafeAreaView,
   StyleSheet,
@@ -16,11 +20,13 @@ import {
   View,
 } from 'react-native';
 
+
 const App = () => {
 
   const camRef = useRef();
   const onCapturePress = () => {
     // camRef.current.captureImage();
+
   };
   const onRecordPress = () => {
     // camRef.current.recordVideo();
@@ -33,10 +39,17 @@ const App = () => {
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.flex}>
         {/** Change View to your CamView */}
-        <View
+
+
+        <CameraView
           style={styles.container}
           ref={camRef}
-        />
+        >
+            
+        </CameraView>
+
+
+
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={onCapturePress} style={styles.button}>
             <Text>{'Capture'}</Text>
@@ -61,6 +74,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'grey',
   },
+
+  camera: {
+    flex: 1,
+    backgroundColor: 'red',
+  },
+
   buttonContainer: {
     flexDirection: 'row',
   },
