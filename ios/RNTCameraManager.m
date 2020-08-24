@@ -10,18 +10,45 @@
 
 @implementation RNTCameraManager
 
+TestView *testView;
+
 RCT_EXPORT_MODULE(RNTCameraView)
 - (UIView *)view
 {
-  return [[TestView alloc] init];
+  testView = [[TestView alloc] init];
+  return testView;
 }
 
-
-RCT_EXPORT_METHOD(findEvents:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(reconnect)
 {
-  NSArray *events = @[@1,@2];
-  callback(@[[NSNull null], events]);
+  runOnMainQueueWithoutDeadlocking(^{
+      //Do stuff
+    [testView doReconnect];
+  });
 }
+
+void runOnMainQueueWithoutDeadlocking(void (^block)(void))
+{
+    if ([NSThread isMainThread])
+    {
+        block();
+    }
+    else
+    {
+        dispatch_sync(dispatch_get_main_queue(), block);
+    }
+}
+
+RCT_EXPORT_METHOD(connect)
+{
+  runOnMainQueueWithoutDeadlocking(^{
+      //Do stuff
+    [testView openVideo];
+  });
+
+}
+
+
 
 
 @end

@@ -24,11 +24,14 @@ import {
 const App = () => {
 
   const camRef = useRef();
-  const onCapturePress = () => {
-    // camRef.current.captureImage();
+  const onCapturePress = async () => {
 
+    await NativeModules.RNTCameraView.connect();
+    // camRef.current.captureImage();
   };
-  const onRecordPress = () => {
+  const onRecordPress = async () => {
+
+    await NativeModules.RNTCameraView.reconnect();
     // camRef.current.recordVideo();
   };
   const onStopPress = () => {
@@ -39,23 +42,18 @@ const App = () => {
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.flex}>
         {/** Change View to your CamView */}
-
-
         <CameraView
           style={styles.container}
           ref={camRef}
         >
-            
         </CameraView>
-
-
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={onCapturePress} style={styles.button}>
-            <Text>{'Capture'}</Text>
+            <Text>{'Connect'}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={onRecordPress} style={styles.button}>
-            <Text>{'Record'}</Text>
+            <Text>{'Reconnect'}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={onStopPress} style={styles.button}>
             <Text>{'Stop'}</Text>

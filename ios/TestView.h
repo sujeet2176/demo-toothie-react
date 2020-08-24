@@ -6,11 +6,19 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <IJKMediaFramework/IJKMediaFramework.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface TestView : UIView
+@interface TestView : UIView <IJKFFMoviePlayerDelegate>
+
+- (void)doReconnect;
+- (void)openVideo;
+
+@property(atomic,strong) NSURL *url;
+@property(atomic, retain) id<IJKMediaPlayback> player;
+
 
 @end
 
