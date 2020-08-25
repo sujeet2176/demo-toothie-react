@@ -9,7 +9,8 @@ import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.sdkpoc.R;
+import com.demotoothie.R;
+
 
 public class ReviewActivity extends AppCompatActivity {
 

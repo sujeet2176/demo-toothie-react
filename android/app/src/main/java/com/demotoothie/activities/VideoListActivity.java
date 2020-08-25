@@ -7,8 +7,8 @@ import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import com.demotoothie.R;
 import com.demotoothie.Utilities;
-import com.example.sdkpoc.R;
 
 import java.io.File;
 import java.util.List;

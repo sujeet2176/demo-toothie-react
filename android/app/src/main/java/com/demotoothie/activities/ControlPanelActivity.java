@@ -27,6 +27,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.baoyz.actionsheet.ActionSheet;
+import com.demotoothie.R;
 import com.demotoothie.Utilities;
 import com.demotoothie.application.Config;
 import com.demotoothie.application.Settings;
@@ -34,7 +35,6 @@ import com.demotoothie.comm.MessageCenter;
 import com.demotoothie.comm.TCPMessage;
 import com.demotoothie.eventbus.BusProvider;
 import com.demotoothie.widget.bwsocket.BWSocket;
-import com.example.sdkpoc.R;
 import com.example.sdkpoc.buildwin.common.widget.freespacemonitor.FreeSpaceMonitor;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;

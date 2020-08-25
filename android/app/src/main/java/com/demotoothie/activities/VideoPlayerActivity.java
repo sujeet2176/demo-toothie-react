@@ -19,7 +19,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.example.sdkpoc.R;
+
+import com.demotoothie.R;
 
 import tv.danmaku.ijk.media.widget.AndroidMediaController;
 import tv.danmaku.ijk.media.widget.IjkMpOptions;

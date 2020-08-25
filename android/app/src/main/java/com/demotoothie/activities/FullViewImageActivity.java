@@ -19,7 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 
-import com.example.sdkpoc.R;
+import com.demotoothie.R;
 import com.example.sdkpoc.buildwin.common.widget.ui.TouchImageView;
 
 import butterknife.BindView;

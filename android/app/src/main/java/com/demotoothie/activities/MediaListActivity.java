@@ -20,8 +20,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.demotoothie.R;
 import com.demotoothie.Utilities;
-import com.example.sdkpoc.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;

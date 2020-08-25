@@ -11,8 +11,8 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import com.demotoothie.R;
 import com.demotoothie.Utilities;
-import com.example.sdkpoc.R;
 import com.facebook.common.util.UriUtil;
 import com.stfalcon.frescoimageviewer.ImageViewer;
 
