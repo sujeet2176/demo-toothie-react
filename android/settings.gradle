@@ -1,3 +1,11 @@
 rootProject.name = 'demoToothie'
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'
+include ':ijkplayer-armv5'
+include ':ijkplayer-armv7a'
+include ':ijkplayer-arm64'
+include ':ijkplayer-x86'
+include ':ijkplayer-x86_64'
+
+include ':ijkplayer-java'
+include ':ijkplayer-media'
