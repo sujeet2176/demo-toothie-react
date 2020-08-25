@@ -10,12 +10,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-class IntraOralCam implements ReactPackage {
+public class RNTCameraPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
         //We import the module file here
-        modules.add(new ControlModule(reactContext));
 
         return modules;
     }
@@ -23,6 +22,7 @@ class IntraOralCam implements ReactPackage {
 
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-        return Collections.emptyList();
+        return Collections.<ViewManager>singletonList(
+                new RNTCameraViewManager());
     }
 }

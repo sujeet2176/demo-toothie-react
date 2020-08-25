@@ -7,7 +7,7 @@
  */
 
 import React, { useRef } from 'react';
-import CameraView from './RCTCameraView.js';
+// import CameraView from './RCTCameraView.js';
 import { NativeModules } from 'react-native';
 
 
@@ -42,11 +42,10 @@ const App = () => {
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.flex}>
         {/** Change View to your CamView */}
-        <CameraView
+        <CamView>
           style={styles.container}
           ref={camRef}
-        >
-        </CameraView>
+        </CamView>
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={onCapturePress} style={styles.button}>
