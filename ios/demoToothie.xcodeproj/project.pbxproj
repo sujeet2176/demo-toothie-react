@@ -12,10 +12,11 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		1B3374C624F2A4740010DC2F /* RNTCameraManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3374C524F2A4740010DC2F /* RNTCameraManager.m */; };
-		1B3374C924F2B28D0010DC2F /* TestView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3374C824F2B28D0010DC2F /* TestView.m */; };
+		1B3374C924F2B28D0010DC2F /* IJKCameraView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3374C824F2B28D0010DC2F /* IJKCameraView.m */; };
 		1B3374CC24F2D6710010DC2F /* cif.yuv444p in Resources */ = {isa = PBXBuildFile; fileRef = 1B3374CB24F2D6710010DC2F /* cif.yuv444p */; };
 		1B3BAF5C24EF9FD400421861 /* IJKMediaFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B3BAF5A24EF9FCA00421861 /* IJKMediaFramework.framework */; };
 		1B3BAF5D24EF9FD400421861 /* IJKMediaFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1B3BAF5A24EF9FCA00421861 /* IJKMediaFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1BA7F1AC24F4E11800F92689 /* AppUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BA7F1AB24F4E11800F92689 /* AppUtility.m */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -73,10 +74,12 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = demoToothie/main.m; sourceTree = "<group>"; };
 		1B3374C424F2A4740010DC2F /* RNTCameraManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNTCameraManager.h; sourceTree = "<group>"; };
 		1B3374C524F2A4740010DC2F /* RNTCameraManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNTCameraManager.m; sourceTree = "<group>"; };
-		1B3374C724F2B28D0010DC2F /* TestView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestView.h; sourceTree = "<group>"; };
-		1B3374C824F2B28D0010DC2F /* TestView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestView.m; sourceTree = "<group>"; };
+		1B3374C824F2B28D0010DC2F /* IJKCameraView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IJKCameraView.m; sourceTree = "<group>"; };
 		1B3374CB24F2D6710010DC2F /* cif.yuv444p */ = {isa = PBXFileReference; lastKnownFileType = file; path = cif.yuv444p; sourceTree = "<group>"; };
 		1B3BAF5A24EF9FCA00421861 /* IJKMediaFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = IJKMediaFramework.framework; sourceTree = "<group>"; };
+		1BA7F1A624F4E09000F92689 /* IJKCameraView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IJKCameraView.h; sourceTree = "<group>"; };
+		1BA7F1AA24F4E11800F92689 /* AppUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppUtility.h; sourceTree = "<group>"; };
+		1BA7F1AB24F4E11800F92689 /* AppUtility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppUtility.m; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* demoToothie-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "demoToothie-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* demoToothie-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "demoToothie-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2DA62C6E9D369CCE354B4BCA /* Pods-demoToothie-demoToothieTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-demoToothie-demoToothieTests.release.xcconfig"; path = "Target Support Files/Pods-demoToothie-demoToothieTests/Pods-demoToothie-demoToothieTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -151,6 +154,7 @@
 		13B07FAE1A68108700A75B9A /* demoToothie */ = {
 			isa = PBXGroup;
 			children = (
+				1BA7F1A924F4E0E100F92689 /* Utility */,
 				1B3374CA24F2D6710010DC2F /* Resources2 */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -159,10 +163,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
-				1B3374C424F2A4740010DC2F /* RNTCameraManager.h */,
-				1B3374C524F2A4740010DC2F /* RNTCameraManager.m */,
-				1B3374C724F2B28D0010DC2F /* TestView.h */,
-				1B3374C824F2B28D0010DC2F /* TestView.m */,
+				1BA7F1A824F4E0B200F92689 /* RNTCameraManager */,
+				1BA7F1A724F4E09C00F92689 /* IJKCameraView */,
 			);
 			name = demoToothie;
 			sourceTree = "<group>";
@@ -173,6 +175,33 @@
 				1B3374CB24F2D6710010DC2F /* cif.yuv444p */,
 			);
 			path = Resources2;
+			sourceTree = "<group>";
+		};
+		1BA7F1A724F4E09C00F92689 /* IJKCameraView */ = {
+			isa = PBXGroup;
+			children = (
+				1BA7F1A624F4E09000F92689 /* IJKCameraView.h */,
+				1B3374C824F2B28D0010DC2F /* IJKCameraView.m */,
+			);
+			path = IJKCameraView;
+			sourceTree = "<group>";
+		};
+		1BA7F1A824F4E0B200F92689 /* RNTCameraManager */ = {
+			isa = PBXGroup;
+			children = (
+				1B3374C424F2A4740010DC2F /* RNTCameraManager.h */,
+				1B3374C524F2A4740010DC2F /* RNTCameraManager.m */,
+			);
+			path = RNTCameraManager;
+			sourceTree = "<group>";
+		};
+		1BA7F1A924F4E0E100F92689 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				1BA7F1AA24F4E11800F92689 /* AppUtility.h */,
+				1BA7F1AB24F4E11800F92689 /* AppUtility.m */,
+			);
+			path = Utility;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
@@ -610,8 +639,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1B3374C924F2B28D0010DC2F /* TestView.m in Sources */,
+				1B3374C924F2B28D0010DC2F /* IJKCameraView.m in Sources */,
 				1B3374C624F2A4740010DC2F /* RNTCameraManager.m in Sources */,
+				1BA7F1AC24F4E11800F92689 /* AppUtility.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);

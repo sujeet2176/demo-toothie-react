@@ -1,78 +1,73 @@
 //
-//  TestView.m
+//  IJKCameraView.m
 //  demoToothie
 //
 //  Created by Sujeet Shrivastav on 23/08/20.
 //
 
-#import "TestView.h"
+#import "IJKCameraView.h"
 
 #define RECONNECTION_INTERVAL   0.5
+#define IMAGE_DIRECTORY_NAME @"Images"
+#define Video_DIRECTORY_NAME @"Videos"
+#define URL_STRING @"rtsp://192.168.1.1:7070/webcam"
 
 
-@implementation TestView 
+@implementation IJKCameraView 
 {
-int videoRotation;
-NSData *cifData;
-NSTimer *insertTimer;
-BOOL inserting;
+  int videoRotation;
+  NSData *cifData;
+  NSTimer *insertTimer;
+  BOOL inserting;
 }
 
-UILabel *test;
+#pragma mark - Life Cycle Methods
+- (instancetype)init {
+  self = [super init];
+  if (self) {
+    //show video
+    self.url = [NSURL URLWithString: URL_STRING];
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
-
-- (void)awakeFromNib {
-  [super awakeFromNib];
-
-
-
-}
-
-- (void)layoutSubviews {
-  [super layoutSubviews];
-
-  //show video
-  self.url = [NSURL URLWithString:@"rtsp://192.168.1.1:7070/webcam"];
-
-  // Cannot place in installMovieNotificationObservers, if so, it takes no effect
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(willResignActive:)
-                                               name:UIApplicationWillResignActiveNotification
-                                             object:_player];
+    // Cannot place in installMovieNotificationObservers, if so, it takes no effect
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(willResignActive:)
+                                                 name:UIApplicationWillResignActiveNotification
+                                               object:_player];
 
 
-  NSString *cifDataPath = [[NSBundle mainBundle] pathForResource:@"cif" ofType:@"yuv444p"];
-  cifData = [[NSData alloc] initWithContentsOfFile:cifDataPath];
-
-
+    NSString *cifDataPath = [[NSBundle mainBundle] pathForResource:@"cif" ofType:@"yuv444p"];
+    cifData = [[NSData alloc] initWithContentsOfFile:cifDataPath];
+  }
+  return self;
 }
 
+#pragma mark - Exposed Methods for Camera
 - (void)openVideo {
     IJKFFOptions *options = [IJKFFOptions optionsByDefault];
-    // The JPEG parsing method uses the padding method by default (that is, if the network packet is lost, the last frame of data is used to make up), which can be changed to DROP (the entire frame is lost when the packet is lost, do not use it if the network is not good), ORIGIN (original method, Do not use)
+
+  // The JPEG parsing method uses the padding method by default (that is, if the network packet is lost, the last frame of data is used to make up), which can be changed to DROP (the entire frame is lost when the packet is lost, do not use it if the network is not good), ORIGIN (original method, Do not use)
     [options setPlayerOptionIntValue:RtpJpegParsePacketMethodOrigin forKey:@"rtp-jpeg-parse-packet-method"];
-    // 读帧超时时间，单位us
+
+  // 读帧超时时间，单位us
     [options setPlayerOptionIntValue:5000 * 1000 forKey:@"readtimeout"];
-    // Image type
+
+  // Image type
     [options setPlayerOptionIntValue:PreferredImageTypeJPEG forKey:@"preferred-image-type"];
-    // Image quality, available for lossy format (min and max are both from 1 to 51, 0 < min <= max, smaller is better, default is 2 and 31)
+
+  // Image quality, available for lossy format (min and max are both from 1 to 51, 0 < min <= max, smaller is better, default is 2 and 31)
     [options setPlayerOptionIntValue:2 forKey:@"image-quality-min"];
     [options setPlayerOptionIntValue:31 forKey:@"image-quality-max"];
-    // video
+
+  // video
     [options setPlayerOptionIntValue:PreferredVideoTypeMJPEG    forKey:@"preferred-video-type"];
     [options setPlayerOptionIntValue:1                          forKey:@"video-need-transcoding"];
     [options setPlayerOptionIntValue:MjpegPixFmtYUVJ420P        forKey:@"mjpeg-pix-fmt"];
-    // Video quality, for MJPEG and MPEG4
+
+  // Video quality, for MJPEG and MPEG4
     [options setPlayerOptionIntValue:2                          forKey:@"video-quality-min"];
     [options setPlayerOptionIntValue:20                         forKey:@"video-quality-max"];
-    // x264 preset, tune and profile, for H264
+
+  // x264 preset, tune and profile, for H264
     [options setPlayerOptionIntValue:X264OptionPresetUltrafast  forKey:@"x264-option-preset"];
     [options setPlayerOptionIntValue:X264OptionTuneZerolatency  forKey:@"x264-option-tune"];
     [options setPlayerOptionIntValue:X264OptionProfileMain      forKey:@"x264-option-profile"];
@@ -84,12 +79,11 @@ UILabel *test;
     self.player = moviePlayerController;
     self.player.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     self.player.view.frame = self.bounds;
-    // Stretching method, choose proportional stretching or full-screen stretching according to your needs
+
+  // Stretching method, choose proportional stretching or full-screen stretching according to your needs
     self.player.scalingMode = IJKMPMovieScalingModeAspectFit;
     self.player.shouldAutoplay = YES;
-
     self.autoresizesSubviews = YES;
-//    [self.view addSubview:self.player.view];
     [self insertSubview:self.player.view atIndex:0];
 
     videoRotation = 0;
@@ -107,10 +101,8 @@ UILabel *test;
     // [IJKFFMoviePlayerController checkIfPlayerVersionMatch:YES major:1 minor:0 micro:0];
 }
 
-#pragma mark Handle Notification
-
-- (void)loadStateDidChange:(NSNotification*)notification
-{
+#pragma mark - Handle Notification
+- (void)loadStateDidChange:(NSNotification*)notification {
     //    MPMovieLoadStateUnknown        = 0,
     //    MPMovieLoadStatePlayable       = 1 << 0,
     //    MPMovieLoadStatePlaythroughOK  = 1 << 1, // Playback will be automatically started in this state when shouldAutoplay is YES
@@ -128,8 +120,7 @@ UILabel *test;
 }
 
 // End play notification
-- (void)moviePlayBackDidFinish:(NSNotification*)notification
-{
+- (void)moviePlayBackDidFinish:(NSNotification*)notification {
     //    MPMovieFinishReasonPlaybackEnded,
     //    MPMovieFinishReasonPlaybackError,
     //    MPMovieFinishReasonUserExited
@@ -161,72 +152,73 @@ UILabel *test;
 
 
 // Ready to start previewing notifications
-- (void)mediaIsPreparedToPlayDidChange:(NSNotification*)notification
-{
+- (void)mediaIsPreparedToPlayDidChange:(NSNotification*)notification {
     NSLog(@"mediaIsPreparedToPlayDidChange\n");
 }
 
-- (void)moviePlayBackStateDidChange:(NSNotification*)notification
-{
-    //    MPMoviePlaybackStateStopped,
-    //    MPMoviePlaybackStatePlaying,
-    //    MPMoviePlaybackStatePaused,
-    //    MPMoviePlaybackStateInterrupted,
-    //    MPMoviePlaybackStateSeekingForward,
-    //    MPMoviePlaybackStateSeekingBackward
+- (void)moviePlayBackStateDidChange:(NSNotification*)notification {
+  //    MPMoviePlaybackStateStopped,
+  //    MPMoviePlaybackStatePlaying,
+  //    MPMoviePlaybackStatePaused,
+  //    MPMoviePlaybackStateInterrupted,
+  //    MPMoviePlaybackStateSeekingForward,
+  //    MPMoviePlaybackStateSeekingBackward
 
-    switch (_player.playbackState)
-    {
-        case IJKMPMoviePlaybackStateStopped: {
-            NSLog(@"IJKMPMoviePlayBackStateDidChange %d: stoped", (int)_player.playbackState);
-            break;
-        }
-        case IJKMPMoviePlaybackStatePlaying: {
-            NSLog(@"IJKMPMoviePlayBackStateDidChange %d: playing", (int)_player.playbackState);
-            break;
-        }
-        case IJKMPMoviePlaybackStatePaused: {
-            NSLog(@"IJKMPMoviePlayBackStateDidChange %d: paused", (int)_player.playbackState);
-            break;
-        }
-        case IJKMPMoviePlaybackStateInterrupted: {
-            NSLog(@"IJKMPMoviePlayBackStateDidChange %d: interrupted", (int)_player.playbackState);
-            break;
-        }
-        case IJKMPMoviePlaybackStateSeekingForward:
-        case IJKMPMoviePlaybackStateSeekingBackward: {
-            NSLog(@"IJKMPMoviePlayBackStateDidChange %d: seeking", (int)_player.playbackState);
-            break;
-        }
-        default: {
-            NSLog(@"IJKMPMoviePlayBackStateDidChange %d: unknown", (int)_player.playbackState);
-            break;
-        }
+
+  switch (_player.playbackState) {
+    case IJKMPMoviePlaybackStateStopped: {
+      NSLog(@"IJKMPMoviePlayBackStateDidChange %d: stoped", (int)_player.playbackState);
+      [_delegate moviePlaybackStateStopped];
+      break;
     }
+    case IJKMPMoviePlaybackStatePlaying: {
+      NSLog(@"IJKMPMoviePlayBackStateDidChange %d: playing", (int)_player.playbackState);
+      [_delegate moviePlaybackStatePlaying];
+      break;
+    }
+    case IJKMPMoviePlaybackStatePaused: {
+      NSLog(@"IJKMPMoviePlayBackStateDidChange %d: paused", (int)_player.playbackState);
+      [_delegate moviePlaybackStatePause];
+      break;
+    }
+    case IJKMPMoviePlaybackStateInterrupted: {
+      NSLog(@"IJKMPMoviePlayBackStateDidChange %d: interrupted", (int)_player.playbackState);
+      break;
+    }
+    case IJKMPMoviePlaybackStateSeekingForward:
+    case IJKMPMoviePlaybackStateSeekingBackward: {
+      NSLog(@"IJKMPMoviePlayBackStateDidChange %d: seeking", (int)_player.playbackState);
+      break;
+    }
+    default: {
+      NSLog(@"IJKMPMoviePlayBackStateDidChange %d: unknown", (int)_player.playbackState);
+      [_delegate moviePlaybackStateError];
+      break;
+    }
+  }
 }
 
-#pragma mark IJKMoviePlayerControllerDelegate
+#pragma mark - IJKMoviePlayerControllerDelegate
 
-- (void)moviePlayerDidShutdown:(IJKFFMoviePlayerController *)player
-{
+- (void)moviePlayerDidShutdown:(IJKFFMoviePlayerController *)player {
     IJKFFMoviePlayerController *mpc = self.player;
     [mpc setDelegate:nil];
 
     [self.player.view removeFromSuperview];
     [self removeMovieNotificationObservers];
-    [self performSelector:@selector(doReconnect) withObject:self afterDelay:RECONNECTION_INTERVAL];
+    [self performSelector:@selector(doReconnect)
+               withObject:self
+               afterDelay:RECONNECTION_INTERVAL];
 }
 
-- (void)doReconnect
-{
+- (void)doReconnect {
         NSLog(@"doReconnect");
         [self openVideo];
         [self installMovieNotificationObservers];
         [self.player prepareToPlay];
 }
 
-- (void)willResignActive:(NSNotification *)notification
-{
+- (void)willResignActive:(NSNotification *)notification {
     NSLog(@"ControlPanelViewController:willResignActive");
 
     [self.player stopRecordVideo];
@@ -237,8 +229,7 @@ UILabel *test;
  * Old proxy method
  * Receive data from firmware and use RTCP channel, so if you want to use it, you must add logic to distinguish the original RTCP data (use unique packet structure or check)
  */
-- (void)player:(IJKFFMoviePlayerController *)player didReceiveRtcpSrData:(NSData *)data
-{
+- (void)player:(IJKFFMoviePlayerController *)player didReceiveRtcpSrData:(NSData *)data {
     // Because the data channel is shared with RTCP, the return data needs to be distinguished from the RTCP Sender Report, and you need to add your own logo to distinguish
     // RTCP sends Sender Report every 5 seconds by default
     // Will be encapsulated in the future, send and receive data directly
@@ -251,23 +242,22 @@ UILabel *test;
 * The data is received through UDP protocol, and the resource occupation is less. Although 100% reception is not guaranteed, the success rate is okay.
 * If you need to ensure 100% successful reception, you can create a new TCP Socket for sending and receiving data
 */
-- (void)player:(IJKFFMoviePlayerController *)player didReceiveData:(NSData *)data
-{
+- (void)player:(IJKFFMoviePlayerController *)player didReceiveData:(NSData *)data {
     // work with firmware api -> wifi_data_send
     NSLog(@"didReceiveData: %@", data);
 }
 
 // Photo callback
 // resultCode, <0 An error occurred, = 0 take the next photo, =1, complete the photo
-- (void)playerDidTakePicture:(IJKFFMoviePlayerController *)player resultCode:(int)resultCode fileName:(NSString *)fileName
-{
+- (void)playerDidTakePicture:(IJKFFMoviePlayerController *)player resultCode:(int)resultCode fileName:(NSString *)fileName {
     if (resultCode == 1) {
         // End of the photo
         [self showInfo:@"End of taking pictures"];
     }
     else if (resultCode == 0) {
         // Successfully saved a photo
-        [self showInfo:[NSString stringWithFormat:@"Photo saved successfully: %@", fileName]];
+      [_delegate successCaptureImageAt: fileName];
+        //[self showInfo:[NSString stringWithFormat:@"Photo saved successfully: %@", fileName]];
     }
     else if (resultCode < 0) {
         // Failed to take pictures
@@ -277,20 +267,21 @@ UILabel *test;
 
 // Video callback
 // resultCode, <0 An error occurred, = 0 to start recording, otherwise the recording is successfully saved
-- (void)playerDidRecordVideo:(IJKFFMoviePlayerController *)player resultCode:(int)resultCode fileName:(NSString *)fileName
-{
-    if (resultCode < 0) {
-        // Video failed
-        [self showInfo:@"Video failed"];
-    }
-    else if (resultCode == 0) {
-        // Start recording
-            [self showInfo:@"Start recording, press again to stop recording"];
-        }
-        else {
-            // End of recording
-            [self showInfo:[NSString stringWithFormat:@"Successfully saved video: %@", fileName]];
-    }
+- (void)playerDidRecordVideo:(IJKFFMoviePlayerController *)player resultCode:(int)resultCode fileName:(NSString *)fileName {
+  if (resultCode < 0) {
+    // Video failed
+    [self showInfo:@"Video failed"];
+  }
+  else if (resultCode == 0) {
+    // Start recording
+    [_delegate didStartRecordingAt:fileName];
+    [player startInsertVideoWithWidth:356 height:288 pixelFormat:5];
+  }
+  else {
+    // End of recording
+    [_delegate didStopRecordingAt:fileName];
+    [player stopInsertVideo];
+  }
 }
 
 // Insert external video callback
@@ -319,7 +310,7 @@ UILabel *test;
     NSLog(@"playerDidReceivedFrameData: len = %lu, w = %d, h = %d, pf = %d", (unsigned long)[frameData length], width, height, pixelFormat);
 }
 
-#pragma mark Install Movie Notifications
+#pragma mark - Install Movie Notifications
 
 /* Register observers for the various movie object notifications. */
 -(void)installMovieNotificationObservers
@@ -353,8 +344,7 @@ UILabel *test;
 #pragma mark Remove Movie Notification Handlers
 
 /* Remove the movie notification observers from the movie object. */
--(void)removeMovieNotificationObservers
-{
+-(void)removeMovieNotificationObservers {
     NSLog(@"removeMovieNotificationObservers");
     [[NSNotificationCenter defaultCenter]removeObserver:self name:IJKMPMoviePlayerLoadStateDidChangeNotification object:_player];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:IJKMPMoviePlayerPlaybackDidFinishNotification object:_player];
@@ -363,21 +353,17 @@ UILabel *test;
     [[NSNotificationCenter defaultCenter]removeObserver:self name:IJKMPMoviePlayerDidShutdownNotification object:_player];
 }
 
--(void)removePlayerNotificationObservers
-{
+-(void)removePlayerNotificationObservers {
     NSLog(@"removePlayerNotificationObservers");
     [[NSNotificationCenter defaultCenter]removeObserver:self name:UIApplicationWillResignActiveNotification object:_player];
 }
 
 #pragma mark -
-
-inline static IJKFFMoviePlayerController *ffplayerInstance(id<IJKMediaPlayback> player)
-{
+inline static IJKFFMoviePlayerController *ffplayerInstance(id<IJKMediaPlayback> player) {
     return player;
 }
 
-inline static VideoRecordingStatus ffplayerVideoRecordingStatus(IJKFFMoviePlayerController *ffplayer)
-{
+inline static VideoRecordingStatus ffplayerVideoRecordingStatus(IJKFFMoviePlayerController *ffplayer) {
     return ffplayer.videoRecordingStatus;
 }
 
@@ -386,9 +372,7 @@ inline static VideoRecordingStatus ffplayerVideoRecordingStatus(IJKFFMoviePlayer
 /**
  * 执行拍照
  */
-- (void)doTakePicture:(int)number
-{
-    NSString *dirPath = [self mediaDirPath];
+- (void)doTakePicture:(int)number atPath:(NSString *)dirPath {
     NSString *fileName = [self mediaFileName];
 
     // Photo parameter description
@@ -399,18 +383,33 @@ inline static VideoRecordingStatus ffplayerVideoRecordingStatus(IJKFFMoviePlayer
     [self.player takePictureAtPath:dirPath withFileName:fileName width:-1 height:-1 number:number];
 }
 
-- (void)takePicture
-{
+- (void)doTakePicture:(int)number {
+    NSString *dirPath = [self mediaImagesDirPath];
+    NSString *fileName = [self mediaFileName];
+
+    // Photo parameter description
+    // 1. Directory path, the directory needs to be created first, otherwise an error is returned
+    // 2. File name, no need to specify extension
+    // 3 and 4, the width and height of the saved image, if both are -1 (only one -1 is not allowed), the original image size is saved, if it is other, then stretched to the set value
+    // 5. Number of continuous photos, continuous photos, no interval in between
+    [self.player takePictureAtPath:dirPath withFileName:fileName width:-1 height:-1 number:number];
+}
+
+
+- (void)takePicture {
     [self doTakePicture:1];
+}
+
+- (void)takePicture:(NSString *)path {
+  [self doTakePicture:1 atPath:path];
 }
 
 /**
 * Video
 * Set recording parameters in openVideo
  */
-- (void)doRecordVideo
-{
-    NSString *dirPath = [self mediaDirPath];
+- (void)doRecordVideo {
+    NSString *dirPath = [self mediaVideosDirPath];
     NSString *fileName = [self mediaFileName];
     // Video parameter description
     // 1. Directory path, the directory needs to be created first, otherwise an error is returned
@@ -419,8 +418,7 @@ inline static VideoRecordingStatus ffplayerVideoRecordingStatus(IJKFFMoviePlayer
     [self.player startRecordVideoAtPath:dirPath withFileName:fileName width:-1 height:-1];
 }
 
-- (void)recordVideo
-{
+- (void)recordVideo {
     IJKFFMoviePlayerController *ffplayer = ffplayerInstance(self.player);
     VideoRecordingStatus status = ffplayerVideoRecordingStatus(ffplayer);
 
@@ -441,8 +439,7 @@ inline static VideoRecordingStatus ffplayerVideoRecordingStatus(IJKFFMoviePlayer
     }
 }
 
-- (void)outputVideo
-{
+- (void)outputVideo {
     static BOOL enable = NO;
     enable = !enable;
 
@@ -458,8 +455,7 @@ inline static VideoRecordingStatus ffplayerVideoRecordingStatus(IJKFFMoviePlayer
 * Data is sent via UDP protocol, with less resource consumption, although 100% transmission cannot be guaranteed, but the success rate is OK
 * If you need to ensure 100% successful transmission, you can create a new TCP Socket for sending and receiving data
 */
-- (void)doSendData
-{
+- (void)doSendData {
 #if USE_NEW_SEND_DATA_API
     Byte controlBytes[5];
 
@@ -494,16 +490,14 @@ inline static VideoRecordingStatus ffplayerVideoRecordingStatus(IJKFFMoviePlayer
 /**
 * Set VR mode (left and right split screen display)
  */
-- (void)doSetVrMode
-{
+- (void)doSetVrMode {
     [self.player setVrMode:!self.player.isVrMode];
 }
 
 /**
 * The software rotates the screen (display rotation), and rotates clockwise (non-Sensor rotation, the rotation angle of the image transmitted from the image transmission board is unchanged, the angle of the rendered image is changed, and the photo and video are not affected)
  */
-- (void)doSetVideoRotation
-{
+- (void)doSetVideoRotation {
 // flip at 90 degrees
     IJKFFMoviePlayerController *ffplayer = ffplayerInstance(self.player);
     videoRotation += 90;
@@ -513,16 +507,14 @@ inline static VideoRecordingStatus ffplayerVideoRecordingStatus(IJKFFMoviePlayer
 /**
 * The software rotates the screen (image frame rotation), because it needs to keep the width and height all the time, so it only supports 180° (non-Sensor rotation, the rotation angle of the picture passed from the picture transmission board does not change, what changes is the angle of the output image, taking pictures and recording The angle will change)
 */
-- (void)doSetVideoRotation180
-{
+- (void)doSetVideoRotation180 {
     // flip at 180 degrees
     [self.player setRotation180:!self.player.isRotation180];
 }
 
 
 //! ! ! The player configuration needs to display or open "video-need-transcoding" implicitly
-- (void)insertVideo
-{
+- (void)insertVideo {
     IJKFFMoviePlayerController *player = ffplayerInstance(self.player);
 
     if (inserting) {
@@ -537,14 +529,12 @@ inline static VideoRecordingStatus ffplayerVideoRecordingStatus(IJKFFMoviePlayer
     }
 }
 
-- (void)insertVideoData
-{
+- (void)insertVideoData {
     IJKFFMoviePlayerController *player = ffplayerInstance(self.player);
     [player insertVideoData:cifData align:1 copy:YES];
 }
 
-- (void)showInfo:(NSString *)infoText
-{
+- (void)showInfo:(NSString *)infoText {
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
                                                         message:infoText
                                                        delegate:self
@@ -558,8 +548,7 @@ inline static VideoRecordingStatus ffplayerVideoRecordingStatus(IJKFFMoviePlayer
 *
 * @return Document path
 */
-- (NSString *)documentPath
-{
+- (NSString *)documentPath {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     return [paths firstObject];
 }
@@ -568,31 +557,39 @@ inline static VideoRecordingStatus ffplayerVideoRecordingStatus(IJKFFMoviePlayer
 * Return the directory name with today's date as the path
 * Automatically create a directory, successfully return the directory name, unsuccessfully return nil
 */
-- (NSString *)mediaDirPath
-{
-    NSDate *date = [NSDate date];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyyMMdd"];
-    NSString *dirName = [dateFormatter stringFromDate:date];
-    NSString *dirPath = [[self documentPath] stringByAppendingPathComponent:dirName];
+- (NSString *)mediaImagesDirPath {
+  NSString *dirName = IMAGE_DIRECTORY_NAME;
+  NSString *dirPath = [[self documentPath] stringByAppendingPathComponent:dirName];
 
-    if ([[NSFileManager defaultManager] createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:nil error:nil])
-        return dirPath;
+  if ([[NSFileManager defaultManager] createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:nil error:nil])
+    return dirPath;
 
-    return nil;
+  return nil;
+}
+
+/**
+* Return the directory name with today's date as the path
+* Automatically create a directory, successfully return the directory name, unsuccessfully return nil
+*/
+- (NSString *)mediaVideosDirPath {
+  NSString *dirName = Video_DIRECTORY_NAME;
+  NSString *dirPath = [[self documentPath] stringByAppendingPathComponent:dirName];
+
+  if ([[NSFileManager defaultManager] createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:nil error:nil])
+    return dirPath;
+
+  return nil;
 }
 
 /**
 * Return the file name with time as path
  */
-- (NSString *)mediaFileName
-{
-    NSDate *date = [NSDate date];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"HHmmssS"];
-    NSString *fileName = [dateFormatter stringFromDate:date];
-
-    return fileName;
+- (NSString *)mediaFileName {
+  NSDate *date = [NSDate date];
+  NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+  [dateFormatter setDateFormat:@"dd_MM_yyyy_HH_mm_ss"];
+  NSString *fileName = [NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:date]];
+  return fileName;
 }
 
 @end

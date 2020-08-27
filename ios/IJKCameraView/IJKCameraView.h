@@ -1,0 +1,49 @@
+//
+//  IJKCameraView.h
+//  demoToothie
+//
+//  Created by Sujeet Shrivastav on 23/08/20.
+//
+
+#import <UIKit/UIKit.h>
+#import <IJKMediaFramework/IJKMediaFramework.h>
+
+
+NS_ASSUME_NONNULL_BEGIN
+
+@protocol IJKCameraViewDelegate <NSObject>
+
+- (void)moviePlaybackStateStopped;
+- (void)moviePlaybackStatePlaying;
+- (void)moviePlaybackStatePause;
+- (void)moviePlaybackStateError;
+
+- (void)didStartRecordingAt:(NSString *)path;
+- (void)didStopRecordingAt:(NSString *)path;
+
+- (void)successCaptureImageAt:(NSString *)path;
+
+@end
+
+@interface IJKCameraView : UIView <IJKFFMoviePlayerDelegate>
+
+- (void)doReconnect;
+- (void)openVideo;
+
+// Start/Stop Recording
+- (void)recordVideo;
+
+// It will rotate the video to 90 degree and so on
+- (void)doSetVideoRotation;
+- (void)doSetVideoRotation180;
+
+- (void)takePicture;
+- (void)takePicture:(NSString *)atPath;
+
+@property(atomic,strong) NSURL *url;
+@property(atomic, retain) id<IJKMediaPlayback> player;
+@property (nonatomic, weak) id <IJKCameraViewDelegate> delegate;
+
+@end
+
+NS_ASSUME_NONNULL_END

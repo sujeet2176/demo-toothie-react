@@ -24,19 +24,28 @@ import {
 const App = () => {
 
   const camRef = useRef();
-  const onCapturePress = async () => {
-
+  const onConnectPress = async () => {
     await NativeModules.RNTCameraView.connect();
-    // camRef.current.captureImage();
   };
-  const onRecordPress = async () => {
 
-    await NativeModules.RNTCameraView.reconnect();
-    // camRef.current.recordVideo();
+  const onCapturePress = async () => {
+    await NativeModules.RNTCameraView.captureWithCompletion(path => {
+      console.log(path)
+    })
   };
-  const onStopPress = () => {
-    // camRef.current.stopRecording();
+
+  const onStartPress = async() => {
+    await NativeModules.RNTCameraView.recordWithCompletion(path => {
+      console.log(path)
+    })
   };
+
+  const onStopPress = async () => {
+    await NativeModules.RNTCameraView.recordWithCompletion(path => {
+      console.log(path)
+    })
+  };
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -49,11 +58,14 @@ const App = () => {
         </CameraView>
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={onCapturePress} style={styles.button}>
+          <TouchableOpacity onPress={onConnectPress} style={styles.button}>
             <Text>{'Connect'}</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={onRecordPress} style={styles.button}>
-            <Text>{'Reconnect'}</Text>
+          <TouchableOpacity onPress={onCapturePress} style={styles.button}>
+            <Text>{'Capture'}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onStartPress} style={styles.button}>
+            <Text>{'Start'}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={onStopPress} style={styles.button}>
             <Text>{'Stop'}</Text>
@@ -81,6 +93,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
   },
+
   button: {
     flex: 1,
     paddingVertical: 20,
