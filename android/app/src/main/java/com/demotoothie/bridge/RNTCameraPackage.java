@@ -1,5 +1,7 @@
 package com.demotoothie.bridge;
 
+import androidx.annotation.NonNull;
+
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
 import com.facebook.react.bridge.NativeModule;
@@ -11,18 +13,20 @@ import java.util.Collections;
 import java.util.List;
 
 public class RNTCameraPackage implements ReactPackage {
+    @NonNull
     @Override
-    public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-        List<NativeModule> modules = new ArrayList<>();
+    public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
         //We import the module file here
-
-        return modules;
+        return new ArrayList<>();
     }
 
 
+    @NonNull
     @Override
-    public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-        return Collections.<ViewManager>singletonList(
-                new RNTCameraViewManager());
+    public List<ViewManager> createViewManagers(@NonNull ReactApplicationContext reactContext) {
+      List<ViewManager> viewManagers = new ArrayList<>();
+      viewManagers.add(new RNTCameraViewManager(reactContext));
+      return viewManagers;
     }
+
 }

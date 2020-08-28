@@ -7,7 +7,7 @@
  */
 
 import React, { useRef } from 'react';
-// import CameraView from './RCTCameraView.js';
+import CameraView from './RCTCameraView.js';
 import { NativeModules } from 'react-native';
 
 
@@ -25,8 +25,12 @@ const App = () => {
 
   const camRef = useRef();
   const onCapturePress = async () => {
-
-    await NativeModules.RNTCameraView.connect();
+    try{
+        NativeModules.RNTCameraView.connect();
+    } catch (err) {
+      error(err);
+      console.log(err);
+  }l̥
     // camRef.current.captureImage();
   };
   const onRecordPress = async () => {
@@ -42,10 +46,11 @@ const App = () => {
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.flex}>
         {/** Change View to your CamView */}
-        <CamView>
+        <CameraView
           style={styles.container}
           ref={camRef}
-        </CamView>
+        >
+        </CameraView>
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={onCapturePress} style={styles.button}>
