@@ -47,4 +47,18 @@ public class RNTCameraViewManager extends SimpleViewManager<RNTCameraView> {
     protected RNTCameraView createViewInstance(@NonNull ThemedReactContext reactContext) {
         return new RNTCameraView(reactApplicationContext.getCurrentActivity());
     }
+
+    @ReactProp(name = "src")
+    public void setSrc(RNTCameraView rntCameraView, String src) {
+        try {
+            Toast.makeText(reactApplicationContext, "Connect method toast src "+src, Toast.LENGTH_LONG).show();
+            /*Log.d(RNTCameraView, "Connect called");
+            MessageCenter.getInstance().start();
+            rntCameraView.playVideo();*/
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(RNTCameraView, "Connect called err " + e);
+        }
+
+    }
 }

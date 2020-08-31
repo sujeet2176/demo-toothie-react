@@ -25,6 +25,48 @@
         </intent-filter>
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+
+        <activity android:name=".activities.ControlPanelActivity">
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
+        <activity
+            android:name=".activities.ReviewActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name=".activities.PhotoListActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".activities.VideoListActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".activities.VideoPlayerActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/AppThemeToolbar"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity android:name=".activities.FullViewImageActivity"
+            android:theme="@style/AppThemeToolbar"
+            android:screenOrientation="portrait"
+            />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
     </application>
 
 </manifest>

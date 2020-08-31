@@ -1042,19 +1042,7 @@ public class RNTCameraView extends IjkVideoView {
         }
     };
 
-    @ReactProp(name = "src")
-    public void connect(RNTCameraView rntCameraView, String src) {
-        try {
-            Toast.makeText(mActivity, "Connect method toast", Toast.LENGTH_LONG).show();
-            Log.d(RNTCameraView, "Connect called");
-            MessageCenter.getInstance().start();
-            rntCameraView.playVideo();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(RNTCameraView, "Connect called err " + e);
-        }
 
-    }
 
 
 }
