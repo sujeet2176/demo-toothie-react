@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,10 +27,11 @@ import tv.danmaku.ijk.media.widget.IjkVideoView;
 
 import static tv.danmaku.ijk.media.widget.IRenderView.AR_ASPECT_FIT_PARENT;
 
-public class RNTCameraViewManager extends ViewGroupManager<RNTCameraView> {
+public class RNTCameraViewManager extends SimpleViewManager<RNTCameraView> {
     private static final String RNTCameraView = "RNTCameraView";
 
     ReactApplicationContext reactApplicationContext;
+
     public RNTCameraViewManager(ReactApplicationContext reactApplicationContext) {
         this.reactApplicationContext = reactApplicationContext;
     }
@@ -43,49 +45,6 @@ public class RNTCameraViewManager extends ViewGroupManager<RNTCameraView> {
     @NonNull
     @Override
     protected RNTCameraView createViewInstance(@NonNull ThemedReactContext reactContext) {
-        return new RNTCameraView(reactContext);
-    }
-
-    @ReactMethod
-    public void connect(RNTCameraView rntCameraView, Promise promise) {
-        try {
-            if (rntCameraView != null)
-                rntCameraView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d(RNTCameraView, "Connect called");
-                        MessageCenter.getInstance().start();
-                        rntCameraView.playVideo();
-                        promise.resolve(null);
-                    }
-                });
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            promise.reject(e);
-            Log.e(RNTCameraView, "Connect called err " + e);
-        }
-
-    }
-
-    @Override
-    public void receiveCommand(@NonNull com.demotoothie.bridge.RNTCameraView rntCameraView, String commandId, @Nullable ReadableArray args) {
-        super.receiveCommand(rntCameraView, commandId, args);
-        try {
-            Assertions.assertNotNull(rntCameraView);
-            Assertions.assertNotNull(args);
-            rntCameraView.post(new Runnable() {
-                @Override
-                public void run() {
-                    Log.d(RNTCameraView, "Connect called");
-                    MessageCenter.getInstance().start();
-                    rntCameraView.playVideo();
-                }
-            });
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(RNTCameraView, "Connect called err " + e);
-        }
+        return new RNTCameraView(reactApplicationContext.getCurrentActivity());
     }
 }

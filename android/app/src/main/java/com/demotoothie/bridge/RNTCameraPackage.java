@@ -17,7 +17,8 @@ public class RNTCameraPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
         //We import the module file here
-        return new ArrayList<>();
+        //        nativeModules.add(new RNTCameraViewManager(reactContext));
+        return Collections.emptyList();
     }
 
 

@@ -2,7 +2,6 @@ package com.demotoothie.bridge;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaScannerConnection;
@@ -12,8 +11,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 
 import tv.danmaku.ijk.media.widget.IjkMpOptions;
 import tv.danmaku.ijk.media.widget.IjkVideoView;
@@ -25,7 +22,7 @@ import com.demotoothie.application.Settings;
 import com.demotoothie.comm.MessageCenter;
 import com.demotoothie.comm.TCPMessage;
 import com.demotoothie.eventbus.BusProvider;
-import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.karumi.dexter.MultiplePermissionsReport;
@@ -102,28 +99,50 @@ public class RNTCameraView extends IjkVideoView {
 
     // 用于兼容旧版本，如果指令来自新API，则置true
     private boolean fromNewApi;
-    private Context mContext;
+    private Activity mActivity;
 
-    public RNTCameraView(Context context) {
+    public RNTCameraView(Activity context) {
         super(context);
-        mContext = context;
-        msgPrefix = mContext.getResources().getString(R.string.permission_denied_prefix);
-        msgComma = mContext.getResources().getString(R.string.permission_denied_comma);
-        msgDeniedExtStorage = mContext.getResources().getString(R.string.permission_denied_external_storage);
+
+        mActivity = context;
 
         // 订阅事件
-        new Handler(context.getMainLooper()).post(new Runnable() {
+       /* new Handler(context.getMainLooper()).post(new Runnable() {
             @Override
-            public void run() {
+            public void run() {*/
+                msgPrefix = mActivity.getResources().getString(R.string.permission_denied_prefix);
+                msgComma = mActivity.getResources().getString(R.string.permission_denied_comma);
+                msgDeniedExtStorage = mActivity.getResources().getString(R.string.permission_denied_external_storage);
                 BusProvider.getBus().register(this);
                 MessageCenter.getInstance().start();
+                RNTCameraView.this.setBackgroundColor(context.getResources().getColor(R.color.Orchid));
+                b720p = Settings.getInstance(context).getParameterForPhoto720p();
+                VIDEO_VIEW_ASPECT = AR_ASPECT_FIT_PARENT;
+                mVideoPath = Config.PREVIEW_ADDRESS;
+                if (!initVideoView(RNTCameraView.this, mVideoPath)) {
+                    Log.e(RNTCameraView, "initVideoView fail");
+                }
 
-            }
-        });
+                // 载入声音资源
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    SoundPool.Builder builder = new SoundPool.Builder();
+                    builder.setMaxStreams(1);
+
+                    AudioAttributes.Builder attrBuilder = new AudioAttributes.Builder();
+                    attrBuilder.setLegacyStreamType(AudioManager.STREAM_SYSTEM);
+
+                    builder.setAudioAttributes(attrBuilder.build());
+                    mSoundPool = builder.build();
+                } else {
+                    mSoundPool = new SoundPool(1, AudioManager.STREAM_SYSTEM, 5);
+                }
+                mSoundPool.load(mActivity, R.raw.shutter, 1);
+
+            /*}
+        });*/
 
 //        mIjkVideoView = this;
 
-        this.setBackgroundColor(context.getResources().getColor(R.color.Orchid));
 
         /**
          * Right Menu Bar
@@ -150,15 +169,12 @@ public class RNTCameraView extends IjkVideoView {
 //        videoViewParent = findViewById(R.id.video_view_parent);
 
         // Photo&Video 720P
-        b720p = Settings.getInstance(context).getParameterForPhoto720p();
         // 720P填充，VGA按比例拉伸
 //        if (b720p)
 //            VIDEO_VIEW_ASPECT = AR_MATCH_PARENT;
 //        else
-        VIDEO_VIEW_ASPECT = AR_ASPECT_FIT_PARENT;
 
         // handle arguments
-        mVideoPath = Config.PREVIEW_ADDRESS;
 
         // init UI
 //        mHudView = (TableLayout) findViewById(R.id.hud_view);
@@ -166,9 +182,7 @@ public class RNTCameraView extends IjkVideoView {
 
         // init player
 //        this = (IjkVideoView) findViewById(R.id.video_view);
-        if (!initVideoView(this, mVideoPath)) {
-            Log.e(RNTCameraView, "initVideoView fail");
-        }
+
 
         /**
          * Take Photo Button
@@ -247,21 +261,6 @@ public class RNTCameraView extends IjkVideoView {
             }
         });*/
 
-
-        // 载入声音资源
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            SoundPool.Builder builder = new SoundPool.Builder();
-            builder.setMaxStreams(1);
-
-            AudioAttributes.Builder attrBuilder = new AudioAttributes.Builder();
-            attrBuilder.setLegacyStreamType(AudioManager.STREAM_SYSTEM);
-
-            builder.setAudioAttributes(attrBuilder.build());
-            mSoundPool = builder.build();
-        } else {
-            mSoundPool = new SoundPool(1, AudioManager.STREAM_SYSTEM, 5);
-        }
-        mSoundPool.load(mContext, R.raw.shutter, 1);
 
         /**
          * 初始化控件显示
@@ -421,7 +420,7 @@ public class RNTCameraView extends IjkVideoView {
 
                                 index += 4;
                             }
-                            synchronized (mContext) {
+                            synchronized (mActivity) {
                                 mResolutionList = resolutionList;
                             }
                             // resort list
@@ -454,7 +453,7 @@ public class RNTCameraView extends IjkVideoView {
             = new IjkVideoView.IVideoView.OnTookPictureListener() {
         @Override
         public void onTookPicture(IjkVideoView videoView, int resultCode, String fileName) {
-            String toastText = mContext.getResources().getString(R.string.control_panel_alert_save_photo_fail);
+            String toastText = mActivity.getResources().getString(R.string.control_panel_alert_save_photo_fail);
             if (resultCode == 1) {
                 // 播放咔嚓声
                 mSoundPool.play(1, 1, 1, 0, 0, 1);
@@ -463,11 +462,11 @@ public class RNTCameraView extends IjkVideoView {
                 if (file.exists()) {
                     mediaScan(file);
                     // Show toast
-                    toastText = mContext.getResources().getString(R.string.control_panel_alert_save_photo_success) + fileName;
+                    toastText = mActivity.getResources().getString(R.string.control_panel_alert_save_photo_success) + fileName;
                 }
-                Toast.makeText(mContext, toastText, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity, toastText, Toast.LENGTH_SHORT).show();
             } else if (resultCode < 0) {
-                Toast.makeText(mContext, toastText, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity, toastText, Toast.LENGTH_SHORT).show();
             }
         }
     };
@@ -476,7 +475,7 @@ public class RNTCameraView extends IjkVideoView {
             = new IjkVideoView.IVideoView.OnRecordVideoListener() {
         @Override
         public void onRecordVideo(IjkVideoView videoView, final int resultCode, final String fileName) {
-            Handler handler = new Handler(mContext.getMainLooper());
+            Handler handler = new Handler(mActivity.getMainLooper());
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -487,9 +486,9 @@ public class RNTCameraView extends IjkVideoView {
                             mFreeSpaceMonitor.stop();
 
                         recording = false;
-                        noteText = mContext.getResources().getString(R.string.control_panel_alert_write_video_file_error);
+                        noteText = mActivity.getResources().getString(R.string.control_panel_alert_write_video_file_error);
                         Toast.makeText(
-                                mContext,
+                                mActivity,
                                 noteText,
                                 Toast.LENGTH_SHORT
                         ).show();
@@ -520,9 +519,9 @@ public class RNTCameraView extends IjkVideoView {
                         File file = new File(fileName);
                         mediaScan(file);
 
-                        noteText = mContext.getResources().getString(R.string.control_panel_alert_record_video_success);
+                        noteText = mActivity.getResources().getString(R.string.control_panel_alert_record_video_success);
                         Toast.makeText(
-                                mContext,
+                                mActivity,
                                 noteText + fileName,
                                 Toast.LENGTH_SHORT
                         ).show();
@@ -542,12 +541,17 @@ public class RNTCameraView extends IjkVideoView {
      * 开始播放预览视频
      */
     public void playVideo() {
-        this.setRender(VIDEO_VIEW_RENDER);
-        this.setAspectRatio(VIDEO_VIEW_ASPECT);
-        this.setVideoPath(mVideoPath);
-        this.start();
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                RNTCameraView.this.setRender(VIDEO_VIEW_RENDER);
+                RNTCameraView.this.setAspectRatio(VIDEO_VIEW_ASPECT);
+                RNTCameraView.this.setVideoPath(mVideoPath);
+                RNTCameraView.this.start();
+                Log.d(RNTCameraView.class.getName(), "playVideo");
+            }
+        });
 
-        Log.d(RNTCameraView.class.getName(), "playVideo");
     }
 
     /**
@@ -650,7 +654,7 @@ public class RNTCameraView extends IjkVideoView {
      * @param file 媒体文件
      */
     private void mediaScan(File file) {
-        MediaScannerConnection.scanFile(mContext,
+        MediaScannerConnection.scanFile(mActivity,
                 new String[]{file.getAbsolutePath()}, null,
                 new MediaScannerConnection.OnScanCompletedListener() {
                     @Override
@@ -683,7 +687,7 @@ public class RNTCameraView extends IjkVideoView {
      */
     private void takePhoto(int num) {
         // Take a photo
-        String photoFilePath = Utilities.getPhotoDirPath(mContext);
+        String photoFilePath = Utilities.getPhotoDirPath(mActivity);
         String photoFileName = Utilities.getMediaFileName();
         try {
             if (b720p) {
@@ -703,9 +707,9 @@ public class RNTCameraView extends IjkVideoView {
         if (recording) {
             this.stopRecordVideo();
         } else {
-            mFreeSpaceMonitor = new com.example.sdkpoc.buildwin.common.widget.freespacemonitor.FreeSpaceMonitor(mContext);
+            mFreeSpaceMonitor = new com.example.sdkpoc.buildwin.common.widget.freespacemonitor.FreeSpaceMonitor(mActivity);
             if (mFreeSpaceMonitor.checkFreeSpace()) {
-                String videoFilePath = Utilities.getVideoDirPath(mContext);
+                String videoFilePath = Utilities.getVideoDirPath(mActivity);
                 String videoFileName = Utilities.getMediaFileName();
                 // Start to record video
                 try {
@@ -717,8 +721,8 @@ public class RNTCameraView extends IjkVideoView {
                 // 提示剩余空间不足
                 long threshold = mFreeSpaceMonitor.getThreshold();
                 float megabytes = (float) threshold / (1024 * 1024);
-                String toastString = mContext.getResources().getString(R.string.control_panel_insufficient_storage_alert, megabytes);
-                Toast.makeText(mContext, toastString, Toast.LENGTH_SHORT).show();
+                String toastString = mActivity.getResources().getString(R.string.control_panel_insufficient_storage_alert, megabytes);
+                Toast.makeText(mActivity, toastString, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -729,7 +733,7 @@ public class RNTCameraView extends IjkVideoView {
     private void showVideoResolution() {
         List<String> titles = new ArrayList<>();
         int count;
-        synchronized (mContext) {
+        synchronized (mActivity) {
             count = mResolutionList.size();
             if (count > 0) {
                 for (int i = 0; i < count; i++) {
@@ -986,7 +990,7 @@ public class RNTCameraView extends IjkVideoView {
                 ResolutionModel resolutionModel = new ResolutionModel(idx, w, h);
                 resolutionList.add(resolutionModel);
             }
-            synchronized (mContext) {
+            synchronized (mActivity) {
                 mResolutionList = resolutionList;
             }
             // sort list
@@ -1028,7 +1032,7 @@ public class RNTCameraView extends IjkVideoView {
                     }
                 }
                 msg.insert(0, msgPrefix);
-                Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
+                Toast.makeText(mActivity, msg, Toast.LENGTH_LONG).show();
             }
         }
 
@@ -1038,6 +1042,19 @@ public class RNTCameraView extends IjkVideoView {
         }
     };
 
+    @ReactProp(name = "src")
+    public void connect(RNTCameraView rntCameraView, String src) {
+        try {
+            Toast.makeText(mActivity, "Connect method toast", Toast.LENGTH_LONG).show();
+            Log.d(RNTCameraView, "Connect called");
+            MessageCenter.getInstance().start();
+            rntCameraView.playVideo();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(RNTCameraView, "Connect called err " + e);
+        }
+
+    }
 
 
 }

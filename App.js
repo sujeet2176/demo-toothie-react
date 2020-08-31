@@ -8,9 +8,9 @@
 
 import React, { useRef } from 'react';
 import CameraView from './RCTCameraView.js';
-import { NativeModules } from 'react-native';
-
-
+// import {  } from 'react-native';
+// import ToastExample from './ToastExample';
+import { requireNativeComponent , NativeModules} from 'react-native';
 import {
   SafeAreaView,
   StyleSheet,
@@ -20,22 +20,28 @@ import {
   View,
 } from 'react-native';
 
+// let RNTCameraView = requireNativeComponent('RNTCameraView')
 
 const App = () => {
 
   const camRef = useRef();
-  const onCapturePress = async () => {
-    try{
-        NativeModules.RNTCameraView.connect();
-    } catch (err) {
-      error(err);
-      console.log(err);
-  }l̥
+  const onCapturePress = () => {
+    // alert('Connect called')
+    NativeModules.ToastExample.show('Awesome', NativeModules.ToastExample.SHORT);
+    // NativeModules.RNTCameraView.connect('test');
+    CameraView.connect('test');
+
+
+  //   try{
+  //   } catch (err) {
+  //     // error(err);
+  //     console.log(err);
+  // }
     // camRef.current.captureImage();
   };
   const onRecordPress = async () => {
 
-    await NativeModules.RNTCameraView.reconnect();
+    // await NativeModules.RNTCameraView.reconnect();
     // camRef.current.recordVideo();
   };
   const onStopPress = () => {
@@ -51,6 +57,8 @@ const App = () => {
           ref={camRef}
         >
         </CameraView>
+
+        {/* <RNTCameraView></RNTCameraView> */}
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={onCapturePress} style={styles.button}>

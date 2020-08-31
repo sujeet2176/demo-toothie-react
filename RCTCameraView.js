@@ -10,7 +10,7 @@ class CameraView extends Component<PropsType> {
     render() {
 
         return (
-            <CamView style={{flex: 1}}/>
+            <CamView style={{flex: 1, width: '100%', height: '85%'}}/>
         );
     }
 }
