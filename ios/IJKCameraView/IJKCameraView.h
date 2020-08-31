@@ -11,18 +11,23 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@protocol IJKCameraViewEventDelegate <NSObject>
+- (void) startReceivingData;
+
+  - (void)moviePlaybackStateStopped;
+  - (void)moviePlaybackStatePlaying;
+  - (void)moviePlaybackStatePause;
+  - (void)moviePlaybackStateError;
+
+  - (void)didStartRecordingAt:(NSString *)path;
+  - (void)didStopRecordingAt:(NSString *)path;
+  - (void)didErrorRecordingAt:(NSString *)path;
+@end
+
 @protocol IJKCameraViewDelegate <NSObject>
-
-- (void)moviePlaybackStateStopped;
-- (void)moviePlaybackStatePlaying;
-- (void)moviePlaybackStatePause;
-- (void)moviePlaybackStateError;
-
-- (void)didStartRecordingAt:(NSString *)path;
-- (void)didStopRecordingAt:(NSString *)path;
-
 - (void)successCaptureImageAt:(NSString *)path;
-
+- (void)errorCaptureImageAt:(NSString *)path;
+- (void)didStopRecordingAt:(NSString *)path;
 @end
 
 @interface IJKCameraView : UIView <IJKFFMoviePlayerDelegate>
@@ -42,7 +47,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(atomic,strong) NSURL *url;
 @property(atomic, retain) id<IJKMediaPlayback> player;
+
 @property (nonatomic, weak) id <IJKCameraViewDelegate> delegate;
+@property (nonatomic, weak) id <IJKCameraViewEventDelegate> eventDelegate;
 
 @end
 

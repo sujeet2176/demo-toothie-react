@@ -6,6 +6,7 @@
 //
 
 #import "RNTCameraManager.h"
+#import "RNTCameraViewEventManager.h"
 
 @interface RNTCameraManager() <IJKCameraViewDelegate>
 
@@ -14,32 +15,25 @@
 @implementation RNTCameraManager
 
 IJKCameraView *cameraView;
+RNTCameraViewEventManager *cameraViewEventManager;
+
 RCTResponseSenderBlock callbackImageCapture;
 RCTResponseSenderBlock callbackVideoRecording;
 
 RCT_EXPORT_MODULE(RNTCameraView)
 - (UIView *)view {
   cameraView = [[IJKCameraView alloc] init];
+  cameraViewEventManager = [[RNTCameraViewEventManager alloc] init];
   cameraView.delegate = self;
+  cameraView.eventDelegate = cameraViewEventManager;
   return cameraView;
 }
 
-RCT_EXPORT_METHOD(reconnect) {
-  runOnMainQueueWithoutDeadlocking(^{
-      //Do stuff
-    [cameraView doReconnect];
-  });
-}
-
-
 RCT_EXPORT_METHOD(connect) {
-  runOnMainQueueWithoutDeadlocking(^{
-      //Do stuff
+  [AppUtility runOnMainQueueWithoutDeadlocking:^{
     [cameraView doReconnect];
-    //[cameraView openVideo];
-  });
+  }];
 }
-
 
 #pragma mark - Image Capture
 /// This function will save the image at given path
@@ -47,10 +41,9 @@ RCT_EXPORT_METHOD(connect) {
 /// RCTResponseSenderBlock provides the path of image along with image name.
 RCT_EXPORT_METHOD(capture:(NSString *)atPath completion: (RCTResponseSenderBlock)callback) {
   callbackImageCapture = callback;
-  runOnMainQueueWithoutDeadlocking(^{
-      //Do stuff
+  [AppUtility runOnMainQueueWithoutDeadlocking:^{
     [cameraView takePicture:atPath];
-  });
+  }];
 }
 
 /// This function will save the image at given path
@@ -59,10 +52,9 @@ RCT_EXPORT_METHOD(capture:(NSString *)atPath completion: (RCTResponseSenderBlock
 RCT_EXPORT_METHOD(captureWithCompletion: (RCTResponseSenderBlock)callback) {
   callbackImageCapture = callback;
 
-  runOnMainQueueWithoutDeadlocking(^{
-      //Do stuff
+  [AppUtility runOnMainQueueWithoutDeadlocking:^{
     [cameraView takePicture];
-  });
+  }];
 }
 
 #pragma mark - Video Rotation Methods
@@ -81,12 +73,16 @@ RCT_EXPORT_METHOD(recordWithCompletion: (RCTResponseSenderBlock)callback) {
 
 /// This will rotate the image to 90 degree onwards.
 RCT_EXPORT_METHOD(rotate) {
-  [cameraView doSetVideoRotation];
+  [AppUtility runOnMainQueueWithoutDeadlocking:^{
+    [cameraView doSetVideoRotation];
+  }];
 }
 
 /// This will rotate the image to 180 degree onwards.
 RCT_EXPORT_METHOD(rotateTo180) {
-  [cameraView doSetVideoRotation180];
+  [AppUtility runOnMainQueueWithoutDeadlocking:^{
+    [cameraView doSetVideoRotation180];
+  }];
 }
 
 #pragma mark - Native Usage Methods
@@ -103,29 +99,14 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void)) {
   callbackImageCapture(@[path]);
 }
 
-- (void)didStartRecordingAt:(NSString *)path {
-
-}
-
 - (void)didStopRecordingAt:(NSString *)path {
   callbackVideoRecording(@[path]);
 }
 
-- (void)moviePlaybackStateStopped {
-
-}
-
-- (void)moviePlaybackStatePlaying {
-
-}
-
-- (void)moviePlaybackStatePause {
-
-}
-
-- (void)moviePlaybackStateError {
+- (void)errorCaptureImageAt:(nonnull NSString *)path {
   
 }
+
 
 # pragma mark - Initialiser
 

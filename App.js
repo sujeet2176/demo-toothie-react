@@ -8,7 +8,7 @@
 
 import React, { useRef } from 'react';
 import CameraView from './RCTCameraView.js';
-import { NativeModules } from 'react-native';
+import { NativeModules, NativeEventEmitter } from 'react-native';
 
 
 import {
@@ -22,6 +22,15 @@ import {
 
 
 const App = () => {
+
+  const cameraViewEventManager = new NativeEventEmitter(NativeModules.RNTCameraViewEventManager)
+  cameraViewEventManager.addListener("StartRecording", res => {
+    console.log("** Start Recording in React Native **");
+  });
+
+  cameraViewEventManager.addListener("StoppedRecording", res => {
+    console.log("** Stop Recording in React Native **");
+  });
 
   const camRef = useRef();
   const onConnectPress = async () => {

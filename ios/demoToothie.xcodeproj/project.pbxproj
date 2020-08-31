@@ -14,6 +14,7 @@
 		1B3374C624F2A4740010DC2F /* RNTCameraManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3374C524F2A4740010DC2F /* RNTCameraManager.m */; };
 		1B3374C924F2B28D0010DC2F /* IJKCameraView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3374C824F2B28D0010DC2F /* IJKCameraView.m */; };
 		1B3374CC24F2D6710010DC2F /* cif.yuv444p in Resources */ = {isa = PBXBuildFile; fileRef = 1B3374CB24F2D6710010DC2F /* cif.yuv444p */; };
+		1B3AC0D024FCC2FD00662EBC /* RNTCameraViewEventManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3AC0CF24FCC2FD00662EBC /* RNTCameraViewEventManager.m */; };
 		1B3BAF5C24EF9FD400421861 /* IJKMediaFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B3BAF5A24EF9FCA00421861 /* IJKMediaFramework.framework */; };
 		1B3BAF5D24EF9FD400421861 /* IJKMediaFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1B3BAF5A24EF9FCA00421861 /* IJKMediaFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1BA7F1AC24F4E11800F92689 /* AppUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BA7F1AB24F4E11800F92689 /* AppUtility.m */; };
@@ -76,6 +77,8 @@
 		1B3374C524F2A4740010DC2F /* RNTCameraManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNTCameraManager.m; sourceTree = "<group>"; };
 		1B3374C824F2B28D0010DC2F /* IJKCameraView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IJKCameraView.m; sourceTree = "<group>"; };
 		1B3374CB24F2D6710010DC2F /* cif.yuv444p */ = {isa = PBXFileReference; lastKnownFileType = file; path = cif.yuv444p; sourceTree = "<group>"; };
+		1B3AC0CE24FCC2FD00662EBC /* RNTCameraViewEventManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNTCameraViewEventManager.h; sourceTree = "<group>"; };
+		1B3AC0CF24FCC2FD00662EBC /* RNTCameraViewEventManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNTCameraViewEventManager.m; sourceTree = "<group>"; };
 		1B3BAF5A24EF9FCA00421861 /* IJKMediaFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = IJKMediaFramework.framework; sourceTree = "<group>"; };
 		1BA7F1A624F4E09000F92689 /* IJKCameraView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IJKCameraView.h; sourceTree = "<group>"; };
 		1BA7F1AA24F4E11800F92689 /* AppUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppUtility.h; sourceTree = "<group>"; };
@@ -154,7 +157,6 @@
 		13B07FAE1A68108700A75B9A /* demoToothie */ = {
 			isa = PBXGroup;
 			children = (
-				1BA7F1A924F4E0E100F92689 /* Utility */,
 				1B3374CA24F2D6710010DC2F /* Resources2 */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -163,6 +165,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				1BA7F1A924F4E0E100F92689 /* Utility */,
+				1B3AC0CD24FCC2BC00662EBC /* RNTCameraViewEventManager */,
 				1BA7F1A824F4E0B200F92689 /* RNTCameraManager */,
 				1BA7F1A724F4E09C00F92689 /* IJKCameraView */,
 			);
@@ -175,6 +179,15 @@
 				1B3374CB24F2D6710010DC2F /* cif.yuv444p */,
 			);
 			path = Resources2;
+			sourceTree = "<group>";
+		};
+		1B3AC0CD24FCC2BC00662EBC /* RNTCameraViewEventManager */ = {
+			isa = PBXGroup;
+			children = (
+				1B3AC0CE24FCC2FD00662EBC /* RNTCameraViewEventManager.h */,
+				1B3AC0CF24FCC2FD00662EBC /* RNTCameraViewEventManager.m */,
+			);
+			path = RNTCameraViewEventManager;
 			sourceTree = "<group>";
 		};
 		1BA7F1A724F4E09C00F92689 /* IJKCameraView */ = {
@@ -640,6 +653,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1B3374C924F2B28D0010DC2F /* IJKCameraView.m in Sources */,
+				1B3AC0D024FCC2FD00662EBC /* RNTCameraViewEventManager.m in Sources */,
 				1B3374C624F2A4740010DC2F /* RNTCameraManager.m in Sources */,
 				1BA7F1AC24F4E11800F92689 /* AppUtility.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
