@@ -7,11 +7,19 @@ const CamView = requireNativeComponent(MODULE_NAME, null);
 type PropsType = {};
 
 class CameraView extends Component<PropsType> {
-    render() {
+    constructor(props){
+        super(props);
+    }
 
-        return (
-            <CamView style={{flex: 1, width: '100%', height: '85%'}}/>
-        );
+
+    render() {
+        const {isConnected} = this.props;
+        console.log(isConnected); 
+    //    alert (isConnected);
+            return (
+            <CamView style={{flex: 1, width: '100%', height: '85%'}}
+            on = {isConnected}/>
+                );
     }
 }
 

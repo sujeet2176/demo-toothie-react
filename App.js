@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import CameraView from './RCTCameraView.js';
 // import {  } from 'react-native';
 // import ToastExample from './ToastExample';
@@ -23,14 +23,14 @@ import {
 // let RNTCameraView = requireNativeComponent('RNTCameraView')
 
 const App = () => {
-
+  const [isConnected, setIsConnected] = useState(true);
   const camRef = useRef();
   const onCapturePress = () => {
     // alert('Connect called')
-    NativeModules.ToastExample.show('Awesome', NativeModules.ToastExample.SHORT);
+    // NativeModules.ToastExample.show('Awesome', NativeModules.ToastExample.SHORT);
     // NativeModules.RNTCameraView.connect('test');
-    CameraView.connect('test');
-
+    // CameraView.connect('test');
+    setIsConnected(!isConnected);
 
   //   try{
   //   } catch (err) {
@@ -55,6 +55,7 @@ const App = () => {
         <CameraView
           style={styles.container}
           ref={camRef}
+          isConnected = {isConnected}
         >
         </CameraView>
 

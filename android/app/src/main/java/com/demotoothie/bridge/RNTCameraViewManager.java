@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.demotoothie.R;
 import com.demotoothie.application.Config;
 import com.demotoothie.comm.MessageCenter;
 import com.facebook.infer.annotation.Assertions;
@@ -48,14 +49,23 @@ public class RNTCameraViewManager extends SimpleViewManager<RNTCameraView> {
         return new RNTCameraView(reactApplicationContext.getCurrentActivity());
     }
 
-    @ReactProp(name = "src")
-    public void setSrc(RNTCameraView rntCameraView, String src) {
+    @ReactProp(name = "on")
+    public void setOn(RNTCameraView rntCameraView, boolean on) {
         try {
-            Toast.makeText(reactApplicationContext, "Connect method toast src "+src, Toast.LENGTH_LONG).show();
-            /*Log.d(RNTCameraView, "Connect called");
-            MessageCenter.getInstance().start();
-            rntCameraView.playVideo();*/
-        } catch (Exception e) {
+            Toast.makeText(reactApplicationContext, "Connect src : " + on, Toast.LENGTH_LONG).show();
+            Log.d(RNTCameraView, "Connect called " + on);
+            if (on) {
+                MessageCenter.getInstance().start();
+                rntCameraView.playVideo();
+//                rntCameraView.setBackgroundColor(reactApplicationContext.getResources().getColor(R.color.ijk_transparent_dark));
+            } else {
+//                rntCameraView.setBackgroundColor(reactApplicationContext.getResources().getColor(R.color.colorAccent));
+                MessageCenter.getInstance().stop();
+//                rntCameraView.stopVideo();
+            }
+            Log.d(RNTCameraView,"val "+rntCameraView);
+        } catch (
+                Exception e) {
             e.printStackTrace();
             Log.e(RNTCameraView, "Connect called err " + e);
         }

@@ -22,9 +22,6 @@ import com.demotoothie.application.Settings;
 import com.demotoothie.comm.MessageCenter;
 import com.demotoothie.comm.TCPMessage;
 import com.demotoothie.eventbus.BusProvider;
-import com.facebook.react.bridge.Promise;
-import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.uimanager.annotations.ReactProp;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -115,7 +112,7 @@ public class RNTCameraView extends IjkVideoView {
                 msgDeniedExtStorage = mActivity.getResources().getString(R.string.permission_denied_external_storage);
                 BusProvider.getBus().register(this);
                 MessageCenter.getInstance().start();
-                RNTCameraView.this.setBackgroundColor(context.getResources().getColor(R.color.Orchid));
+//                RNTCameraView.this.setBackgroundColor(context.getResources().getColor(R.color.Orchid));
                 b720p = Settings.getInstance(context).getParameterForPhoto720p();
                 VIDEO_VIEW_ASPECT = AR_ASPECT_FIT_PARENT;
                 mVideoPath = Config.PREVIEW_ADDRESS;
@@ -557,9 +554,16 @@ public class RNTCameraView extends IjkVideoView {
     /**
      * 停止播放预览视频
      */
-    private void stopVideo() {
-        this.stopPlayback();
-        this.release(true);
+    public void stopVideo() {
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                RNTCameraView.this.stopPlayback();
+                RNTCameraView.this.release(true);
+                Log.d(RNTCameraView.class.getName(), "stopVideo");
+            }
+        });
+
         //        mProgressBar.setVisibility(View.VISIBLE);
     }
 
