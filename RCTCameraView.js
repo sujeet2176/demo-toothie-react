@@ -18,8 +18,12 @@ class CameraView extends Component<PropsType> {
     //    alert (isConnected);
             return (
             <CamView style={{flex: 1, width: '100%', height: '85%'}}
-            on = {isConnected}/>
+            isConnected = {isConnected}
+            click = {1}
+            onClickPic = {(event) => console.log('onClickPic',event.nativeEvent.message)}
+            />
                 );
+
     }
 }
 

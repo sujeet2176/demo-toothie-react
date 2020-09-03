@@ -14,15 +14,19 @@ import com.demotoothie.application.Config;
 import com.demotoothie.comm.MessageCenter;
 import com.facebook.infer.annotation.Assertions;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
+
+import java.util.Map;
 
 import tv.danmaku.ijk.media.widget.IjkVideoView;
 
@@ -32,6 +36,7 @@ public class RNTCameraViewManager extends SimpleViewManager<RNTCameraView> {
     private static final String RNTCameraView = "RNTCameraView";
 
     ReactApplicationContext reactApplicationContext;
+    private RNTCameraView mRntCameraView;
 
     public RNTCameraViewManager(ReactApplicationContext reactApplicationContext) {
         this.reactApplicationContext = reactApplicationContext;
@@ -46,22 +51,23 @@ public class RNTCameraViewManager extends SimpleViewManager<RNTCameraView> {
     @NonNull
     @Override
     protected RNTCameraView createViewInstance(@NonNull ThemedReactContext reactContext) {
-        return new RNTCameraView(reactApplicationContext.getCurrentActivity());
+        if(mRntCameraView == null){
+            mRntCameraView = new RNTCameraView(reactApplicationContext);;
+        }
+        return mRntCameraView;
     }
 
-    @ReactProp(name = "on")
-    public void setOn(RNTCameraView rntCameraView, boolean on) {
+    @ReactProp(name = "isConnected")
+    public void setIsConnected(RNTCameraView rntCameraView, boolean isConnected) {
         try {
-            Toast.makeText(reactApplicationContext, "Connect src : " + on, Toast.LENGTH_LONG).show();
-            Log.d(RNTCameraView, "Connect called " + on);
-            if (on) {
+            Toast.makeText(reactApplicationContext, "Connect src : " + isConnected, Toast.LENGTH_SHORT).show();
+            Log.d(RNTCameraView, "Connect called " + isConnected);
+            if (isConnected) {
                 MessageCenter.getInstance().start();
                 rntCameraView.playVideo();
-//                rntCameraView.setBackgroundColor(reactApplicationContext.getResources().getColor(R.color.ijk_transparent_dark));
             } else {
-//                rntCameraView.setBackgroundColor(reactApplicationContext.getResources().getColor(R.color.colorAccent));
                 MessageCenter.getInstance().stop();
-//                rntCameraView.stopVideo();
+                rntCameraView.stopVideo();
             }
             Log.d(RNTCameraView,"val "+rntCameraView);
         } catch (
@@ -71,4 +77,26 @@ public class RNTCameraViewManager extends SimpleViewManager<RNTCameraView> {
         }
 
     }
+
+    @ReactProp(name = "click")
+    public void clickPic(RNTCameraView rntCameraView, int click){
+        Toast.makeText(reactApplicationContext, "click : "+click, Toast.LENGTH_LONG).show();
+        rntCameraView.takePhoto(click);
+
+    }
+
+    @Override
+    public Map getExportedCustomBubblingEventTypeConstants() {
+        Toast.makeText(reactApplicationContext,"getExportedCustomDirectEventTypeConstants :",Toast.LENGTH_LONG).show();
+
+        return MapBuilder.builder()
+                .put(
+                        "onClickPic",
+                        MapBuilder.of(
+                                "phasedRegistrationNames",
+                                MapBuilder.of("bubbled", "onClickPic")))
+                .build();
+
+    }
+
 }
