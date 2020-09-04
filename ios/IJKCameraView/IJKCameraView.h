@@ -7,6 +7,8 @@
 
 #import <UIKit/UIKit.h>
 #import <IJKMediaFramework/IJKMediaFramework.h>
+#import "AppUtility.h"
+#import "HZRecorder.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -27,7 +29,6 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol IJKCameraViewDelegate <NSObject>
 - (void)successCaptureImageAt:(NSString *)path;
 - (void)errorCaptureImageAt:(NSString *)path;
-- (void)didStopRecordingAt:(NSString *)path;
 @end
 
 @interface IJKCameraView : UIView <IJKFFMoviePlayerDelegate>
@@ -36,7 +37,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)openVideo;
 
 // Start/Stop Recording
-- (void)recordVideo;
+- (void) startRecording;
+- (void) startRecordingAtPath:(NSString *)path;
+- (void) stopRecordingWithCallback:(RNTCompletedCallBack)callback;
 
 // It will rotate the video to 90 degree and so on
 - (void)doSetVideoRotation;

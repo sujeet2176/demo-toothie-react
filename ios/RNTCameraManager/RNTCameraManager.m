@@ -36,15 +36,6 @@ RCT_EXPORT_METHOD(connect) {
 }
 
 #pragma mark - Image Capture
-/// This function will save the image at given path
-/// @param atPath NSString path of the directory where image to save
-/// RCTResponseSenderBlock provides the path of image along with image name.
-RCT_EXPORT_METHOD(capture:(NSString *)atPath completion: (RCTResponseSenderBlock)callback) {
-  callbackImageCapture = callback;
-  [AppUtility runOnMainQueueWithoutDeadlocking:^{
-    [cameraView takePicture:atPath];
-  }];
-}
 
 /// This function will save the image at given path
 /// @param atPath NSString path of the directory where image to save
@@ -62,14 +53,21 @@ RCT_EXPORT_METHOD(captureWithCompletion: (RCTResponseSenderBlock)callback) {
 /// This function will start and stop the video recording. If idle then start recording else stop.
 /// @param atPath NSString path of the directory where video to save
 /// RCTResponseSenderBlock provides the path of image along with image name.
-RCT_EXPORT_METHOD(recordWithCompletion: (RCTResponseSenderBlock)callback) {
-  callbackVideoRecording = callback;
-
+RCT_EXPORT_METHOD(startRecording) {
   [AppUtility runOnMainQueueWithoutDeadlocking:^{
-    [cameraView recordVideo];
+    [cameraView startRecording];
   }];
 }
 
+///  This func will stop recording
+/// @param callback give an array, first element will contain relative  file path
+RCT_EXPORT_METHOD(stopRecordingWithCompletion: (RCTResponseSenderBlock)callback) {
+  [AppUtility runOnMainQueueWithoutDeadlocking:^{
+    [cameraView stopRecordingWithCallback:^(NSString * _Nonnull filePath) {
+      callback(@[filePath]);
+    }];
+  }];
+}
 
 /// This will rotate the image to 90 degree onwards.
 RCT_EXPORT_METHOD(rotate) {
@@ -85,28 +83,13 @@ RCT_EXPORT_METHOD(rotateTo180) {
   }];
 }
 
-#pragma mark - Native Usage Methods
-void runOnMainQueueWithoutDeadlocking(void (^block)(void)) {
-    if ([NSThread isMainThread]) {
-        block();
-    } else {
-        dispatch_sync(dispatch_get_main_queue(), block);
-    }
-}
-
 #pragma mark - IJKCameraViewDelegate Method
 - (void)successCaptureImageAt:(NSString *)path {
   callbackImageCapture(@[path]);
 }
 
-- (void)didStopRecordingAt:(NSString *)path {
-  callbackVideoRecording(@[path]);
-}
-
 - (void)errorCaptureImageAt:(nonnull NSString *)path {
-  
 }
-
 
 # pragma mark - Initialiser
 

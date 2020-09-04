@@ -40,19 +40,17 @@ const App = () => {
   const onCapturePress = async () => {
     await NativeModules.RNTCameraView.captureWithCompletion(path => {
       console.log(path)
-    })
+    });
   };
 
   const onStartPress = async() => {
-    await NativeModules.RNTCameraView.recordWithCompletion(path => {
-      console.log(path)
-    })
+    await NativeModules.RNTCameraView.startRecording();
   };
 
   const onStopPress = async () => {
-    await NativeModules.RNTCameraView.recordWithCompletion(path => {
+    await NativeModules.RNTCameraView.stopRecordingWithCompletion(path => {
       console.log(path)
-    })
+    });
   };
 
   return (

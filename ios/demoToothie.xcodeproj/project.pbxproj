@@ -11,6 +11,7 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		1B12B12D250216E8000BFD14 /* HZRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B12B12B250216E8000BFD14 /* HZRecorder.m */; };
 		1B3374C624F2A4740010DC2F /* RNTCameraManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3374C524F2A4740010DC2F /* RNTCameraManager.m */; };
 		1B3374C924F2B28D0010DC2F /* IJKCameraView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3374C824F2B28D0010DC2F /* IJKCameraView.m */; };
 		1B3374CC24F2D6710010DC2F /* cif.yuv444p in Resources */ = {isa = PBXBuildFile; fileRef = 1B3374CB24F2D6710010DC2F /* cif.yuv444p */; };
@@ -73,6 +74,8 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = demoToothie/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = demoToothie/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = demoToothie/main.m; sourceTree = "<group>"; };
+		1B12B12B250216E8000BFD14 /* HZRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HZRecorder.m; sourceTree = "<group>"; };
+		1B12B12C250216E8000BFD14 /* HZRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HZRecorder.h; sourceTree = "<group>"; };
 		1B3374C424F2A4740010DC2F /* RNTCameraManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNTCameraManager.h; sourceTree = "<group>"; };
 		1B3374C524F2A4740010DC2F /* RNTCameraManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNTCameraManager.m; sourceTree = "<group>"; };
 		1B3374C824F2B28D0010DC2F /* IJKCameraView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IJKCameraView.m; sourceTree = "<group>"; };
@@ -165,12 +168,22 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				1B12B12925021684000BFD14 /* HZRecorder */,
 				1BA7F1A924F4E0E100F92689 /* Utility */,
 				1B3AC0CD24FCC2BC00662EBC /* RNTCameraViewEventManager */,
 				1BA7F1A824F4E0B200F92689 /* RNTCameraManager */,
 				1BA7F1A724F4E09C00F92689 /* IJKCameraView */,
 			);
 			name = demoToothie;
+			sourceTree = "<group>";
+		};
+		1B12B12925021684000BFD14 /* HZRecorder */ = {
+			isa = PBXGroup;
+			children = (
+				1B12B12C250216E8000BFD14 /* HZRecorder.h */,
+				1B12B12B250216E8000BFD14 /* HZRecorder.m */,
+			);
+			path = HZRecorder;
 			sourceTree = "<group>";
 		};
 		1B3374CA24F2D6710010DC2F /* Resources2 */ = {
@@ -658,6 +671,7 @@
 				1BA7F1AC24F4E11800F92689 /* AppUtility.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				1B12B12D250216E8000BFD14 /* HZRecorder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

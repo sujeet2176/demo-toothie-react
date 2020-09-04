@@ -9,9 +9,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef void(^RNTCompletedCallBack) (NSString *filePath);
+
 @interface AppUtility : NSObject
 
 +(void) runOnMainQueueWithoutDeadlocking:(void (^)(void))block;
+
++ (NSString *)mediaFileName ;
++ (NSString *)mediaImagesDirPath ;
++ (NSURL *)videoFileURL ;
 
 @end
 

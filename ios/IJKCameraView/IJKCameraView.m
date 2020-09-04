@@ -8,14 +8,19 @@
 #import "IJKCameraView.h"
 
 #define RECONNECTION_INTERVAL   0.5
-#define IMAGE_DIRECTORY_NAME @"Images"
-#define Video_DIRECTORY_NAME @"Videos"
 #define URL_STRING @"rtsp://192.168.1.1:7070/webcam"
+
+
+@interface IJKCameraView()
+
+@end
 
 @implementation IJKCameraView 
 {
   int videoRotation;
   BOOL recording;
+  HZRecorder *recorder;
+  NSURL *fileURL;
 }
 
 #pragma mark - Life Cycle Methods
@@ -27,6 +32,9 @@
 
     //Set initial value
     recording = false;
+
+    // Initialize recorder
+    recorder = [[HZRecorder alloc] init];
 
     // Cannot place in installMovieNotificationObservers, if so, it takes no effect
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -270,9 +278,6 @@
     // End of recording
     recording = false;
 
-    // This method for callback
-    [_delegate didStopRecordingAt:fileName];
-
     // This method for listeners
     [_eventDelegate didStopRecordingAt:fileName];
   }
@@ -339,7 +344,7 @@ inline static IJKFFMoviePlayerController *ffplayerInstance(id<IJKMediaPlayback> 
  * 执行拍照
  */
 - (void)doTakePicture:(int)number atPath:(NSString *)dirPath {
-    NSString *fileName = [self mediaFileName];
+    NSString *fileName = [AppUtility mediaFileName];
 
     // Photo parameter description
     // 1. Directory path, the directory needs to be created first, otherwise an error is returned
@@ -350,8 +355,8 @@ inline static IJKFFMoviePlayerController *ffplayerInstance(id<IJKMediaPlayback> 
 }
 
 - (void)doTakePicture:(int)number {
-    NSString *dirPath = [self mediaImagesDirPath];
-    NSString *fileName = [self mediaFileName];
+    NSString *dirPath = [AppUtility mediaImagesDirPath];
+    NSString *fileName = [AppUtility mediaFileName];
 
     // Photo parameter description
     // 1. Directory path, the directory needs to be created first, otherwise an error is returned
@@ -374,21 +379,37 @@ inline static IJKFFMoviePlayerController *ffplayerInstance(id<IJKMediaPlayback> 
 * Video
 * Set recording parameters in openVideo
  */
-- (void) startRecording {
-    NSString *dirPath = [self mediaVideosDirPath];
-    NSString *fileName = [self mediaFileName];
-    // Video parameter description
-    // 1. Directory path, the directory needs to be created first, otherwise an error is returned
-    // 2. File name, no need to specify extension
-    // 3 and 4, save the width and height of the video, if both are -1 (only one -1 is not allowed), then save the original image size, if it is other, then stretch to the set value
-    [self.player startRecordVideoAtPath:dirPath withFileName:fileName width:-1 height:-1];
+
+- (void) startRecordingAtPath:(NSString *)path {
+  if (recording) { return; }
+
+  NSURL *videoURL = [NSURL fileURLWithPath:path];
+
+  if (videoURL != nil) {
+    fileURL = videoURL;
+  } else {
+    fileURL = [AppUtility videoFileURL];
+  }
+
+  recording = true;
+  [recorder startRecordingView:self outputURL: fileURL];
 }
 
-- (void)recordVideo {
+- (void) startRecording {
+  if (recording) { return; }
+
+  fileURL = [AppUtility videoFileURL];
+  recording = true;
+  [recorder startRecordingView:self outputURL: fileURL];
+  [_eventDelegate didStartRecordingAt:fileURL.relativePath];
+}
+
+- (void)stopRecordingWithCallback:(RNTCompletedCallBack)callback {
   if (recording) {
-    [self.player stopRecordVideo];
-  } else {
-    [self startRecording];
+    [recorder stop];
+    recording = false;
+    callback(fileURL.relativePath);
+    [_eventDelegate didStopRecordingAt:fileURL.relativePath];
   }
 }
 
@@ -413,57 +434,9 @@ inline static IJKFFMoviePlayerController *ffplayerInstance(id<IJKMediaPlayback> 
 * The software rotates the screen (image frame rotation), because it needs to keep the width and height all the time, so it only supports 180° (non-Sensor rotation, the rotation angle of the picture passed from the picture transmission board does not change, what changes is the angle of the output image, taking pictures and recording The angle will change)
 */
 - (void)doSetVideoRotation180 {
+
     // flip at 180 degrees
     [self.player setRotation180:!self.player.isRotation180];
-}
-
-/**
-* Return to Document path
-*
-* @return Document path
-*/
-- (NSString *)documentPath {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    return [paths firstObject];
-}
-
-/**
-* Return the directory name with today's date as the path
-* Automatically create a directory, successfully return the directory name, unsuccessfully return nil
-*/
-- (NSString *)mediaImagesDirPath {
-  NSString *dirName = IMAGE_DIRECTORY_NAME;
-  NSString *dirPath = [[self documentPath] stringByAppendingPathComponent:dirName];
-
-  if ([[NSFileManager defaultManager] createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:nil error:nil])
-    return dirPath;
-
-  return nil;
-}
-
-/**
-* Return the directory name with today's date as the path
-* Automatically create a directory, successfully return the directory name, unsuccessfully return nil
-*/
-- (NSString *)mediaVideosDirPath {
-  NSString *dirName = Video_DIRECTORY_NAME;
-  NSString *dirPath = [[self documentPath] stringByAppendingPathComponent:dirName];
-
-  if ([[NSFileManager defaultManager] createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:nil error:nil])
-    return dirPath;
-
-  return nil;
-}
-
-/**
-* Return the file name with time as path
- */
-- (NSString *)mediaFileName {
-  NSDate *date = [NSDate date];
-  NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-  [dateFormatter setDateFormat:@"dd_MM_yyyy_HH_mm_ss"];
-  NSString *fileName = [NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:date]];
-  return fileName;
 }
 
 @end
