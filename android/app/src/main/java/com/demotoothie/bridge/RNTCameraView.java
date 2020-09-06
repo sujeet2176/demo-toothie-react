@@ -38,8 +38,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 import static com.demotoothie.application.Config.RECONNECTION_INTERVAL;
@@ -102,7 +104,6 @@ public class RNTCameraView extends IjkVideoView {
     // 用于兼容旧版本，如果指令来自新API，则置true
     private boolean fromNewApi;
     private ReactContext context;
-    private String photoPath = "default path";
 
     public RNTCameraView(ReactContext context) {
         super(context);
@@ -122,9 +123,7 @@ public class RNTCameraView extends IjkVideoView {
         b720p = Settings.getInstance(context).getParameterForPhoto720p();
         VIDEO_VIEW_ASPECT = AR_ASPECT_FIT_PARENT;
         mVideoPath = Config.PREVIEW_ADDRESS;
-        if (!initVideoView(RNTCameraView.this, mVideoPath)) {
-            Log.e(RNTCameraView, "initVideoView fail");
-        }
+
 
         // 载入声音资源
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -140,6 +139,8 @@ public class RNTCameraView extends IjkVideoView {
             mSoundPool = new SoundPool(1, AudioManager.STREAM_SYSTEM, 5);
         }
         mSoundPool.load(this.context, R.raw.shutter, 1);
+
+
 
             /*}
         });*/
@@ -286,7 +287,7 @@ public class RNTCameraView extends IjkVideoView {
         if (videoView == null)
             return false;
 
-        // init player
+//         init player
 //        videoView.setHudView(mHudView);
 
         // 准备开始预览回调
@@ -699,9 +700,11 @@ public class RNTCameraView extends IjkVideoView {
         // Take a photo
         String photoFilePath = Utilities.getPhotoDirPath(context);
         String photoFileName = Utilities.getMediaFileName();
-        photoPath = photoFilePath + "/" + photoFileName;
-        Toast.makeText(context,"take photo executed",Toast.LENGTH_LONG).show();
-        dispatchOnClickPic();
+        String photoPath = photoFilePath + "/" + photoFileName;
+        Toast.makeText(context, "take photo executed", Toast.LENGTH_LONG).show();
+        HashMap<String, String> data = new HashMap<>();
+        data.put("photoPath", photoPath);
+        reactNativeEvent("onClickPic", data);
         try {
             if (b720p) {
                 this.takePicture(photoFilePath, photoFileName, 1280, 720, num);
@@ -716,7 +719,7 @@ public class RNTCameraView extends IjkVideoView {
     /**
      * 录像
      */
-    private void recordVideo() {
+    public void recordVideo() {
         if (recording) {
             this.stopRecordVideo();
         } else {
@@ -724,6 +727,9 @@ public class RNTCameraView extends IjkVideoView {
             if (mFreeSpaceMonitor.checkFreeSpace()) {
                 String videoFilePath = Utilities.getVideoDirPath(context);
                 String videoFileName = Utilities.getMediaFileName();
+                HashMap<String, String> data = new HashMap<>();
+                data.put("videoPath", videoFilePath + "/" + videoFileName);
+                reactNativeEvent("onRecordVideo", data);
                 // Start to record video
                 try {
                     this.startRecordVideo(videoFilePath, videoFileName, -1, -1);
@@ -1056,30 +1062,29 @@ public class RNTCameraView extends IjkVideoView {
     };
 
 
-    private void dispatchOnClickPic() {
-        /*WritableMap event = Arguments.createMap();
-        event.putString("photoPath", "abcd");
-        *//*context.getJSModule(RCTEventEmitter.class).receiveEvent(
-                getId(),
-                "onClickPic",
-                event
-        );*//*
-        Toast.makeText(context,"dispatchOnClickPic :",Toast.LENGTH_LONG).show();
-
-        context.getJSModule(RCTEventEmitter.class)
-                .receiveEvent( this.getId(), "onClickPic", event);*/
-
-        reactNativeEvent("onClickPic","abcd");
-    }
-
-
-    private void reactNativeEvent(String eventName, String message) {
+    private void reactNativeEvent(String eventName, HashMap<String, String> data) {
         WritableMap event = Arguments.createMap();
-        event.putString("message", message);
+        for (Map.Entry<String, String> entry : data.entrySet()) {
+            event.putString(entry.getKey(), entry.getValue());
+        }
         ReactContext reactContext = (ReactContext) this.getContext();
         reactContext
                 .getJSModule(RCTEventEmitter.class)
                 .receiveEvent(this.getId(), eventName, event);
     }
 
+    public void init() {
+        if (!initVideoView(this, mVideoPath)) {
+            Log.e(RNTCameraView, "initVideoView fail");
+        }
+    }
+
+    public void rotateVideo() {
+        // Rotate the screen
+        this.setRotation180(!this.isRotation180());
+        // 每次旋转90度，顺时针
+        mRotationDegree += 90;
+        mRotationDegree %= 360;
+        RNTCameraView.this.setVideoRotation(mRotationDegree);
+    }
 }

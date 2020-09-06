@@ -24,13 +24,17 @@ import {
 
 const App = () => {
   const [isConnected, setIsConnected] = useState(true);
+  const [click, setClick] = useState(0);
+  const [isRotate , setRotate ] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
   const camRef = useRef();
   const onCapturePress = () => {
     // alert('Connect called')
     // NativeModules.ToastExample.show('Awesome', NativeModules.ToastExample.SHORT);
     // NativeModules.RNTCameraView.connect('test');
     // CameraView.connect('test');
-    setIsConnected(!isConnected);
+    
+    setClick(1)
 
   //   try{
   //   } catch (err) {
@@ -39,13 +43,31 @@ const App = () => {
   // }
     // camRef.current.captureImage();
   };
+
+  const getPhotoPath = (path) => {
+
+  if(path){
+    console.log('getPhotoPath',path);
+    setClick(0)
+  }
+  }
+
+  const getVideoPath = (path) => {
+
+    if(path){
+      console.log('getVideoPath',path);
+    }
+    }
+
   const onRecordPress = async () => {
 
     // await NativeModules.RNTCameraView.reconnect();
     // camRef.current.recordVideo();
+    setIsRecording(!isRecording)
   };
-  const onStopPress = () => {
+  const onRotatePress = () => {
     // camRef.current.stopRecording();
+    setRotate(!isRotate)
   };
   return (
     <>
@@ -56,6 +78,11 @@ const App = () => {
           style={styles.container}
           ref={camRef}
           isConnected = {isConnected}
+          isRotate = {isRotate}
+          click = {click}
+          isRecording = {isRecording}
+          getPhotoPath = {getPhotoPath}
+          getVideoPath = {getVideoPath}
         >
         </CameraView>
 
@@ -63,13 +90,13 @@ const App = () => {
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={onCapturePress} style={styles.button}>
-            <Text>{'Connect'}</Text>
+            <Text>{'Click'}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={onRecordPress} style={styles.button}>
-            <Text>{'Reconnect'}</Text>
+            <Text>{'Record Video'}</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={onStopPress} style={styles.button}>
-            <Text>{'Stop'}</Text>
+          <TouchableOpacity onPress={onRotatePress} style={styles.button}>
+            <Text>{'Rotate Video'}</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>

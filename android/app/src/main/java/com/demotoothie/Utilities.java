@@ -24,8 +24,8 @@ public class Utilities {
     // 主目录名
     private static final String HOME_PATH_NAME = "MediaStream";
     // 照片和视频的子目录名
-    private static final String PHOTO_PATH_NAME = "Image";
-    private static final String VIDEO_PATH_NAME = "Movie";
+    private static final String PHOTO_PATH_NAME = "Images";
+    private static final String VIDEO_PATH_NAME = "Videos";
     private static final String CARD_MEDIA_PATH_NAME = "CardMedia";
     private static final String CARD_MEDIA_IMAGE_PATH_NAME = "Image";
     private static final String CARD_MEDIA_VIDEO_PATH_NAME = "Video";
@@ -43,7 +43,7 @@ public class Utilities {
         String homePath = null;
 
         try {
-            String extStoragePath = Objects.requireNonNull(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)).getPath();
+            String extStoragePath = Objects.requireNonNull(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)).getPath();
             File homeFile = new File(extStoragePath, HOME_PATH_NAME);
             homePath = homeFile.getCanonicalPath();
         }

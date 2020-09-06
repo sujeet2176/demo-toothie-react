@@ -13,14 +13,17 @@ class CameraView extends Component<PropsType> {
 
 
     render() {
-        const {isConnected} = this.props;
+        const {isConnected, isRotate, click, isRecording, getPhotoPath, getVideoPath} = this.props;
         console.log(isConnected); 
     //    alert (isConnected);
             return (
-            <CamView style={{flex: 1, width: '100%', height: '85%'}}
-            isConnected = {isConnected}
-            click = {1}
-            onClickPic = {(event) => console.log('onClickPic',event.nativeEvent.message)}
+            <CamView style={{flex: 1}}
+            isConnected = {true}
+            isRecording = {isRecording}
+            isRotate = {isRotate}
+            click = {click}
+            onClickPic = {(event) => getPhotoPath(event.nativeEvent.photoPath)}
+            onRecordVideo = {(event) => getVideoPath(event.nativeEvent.videoPath)}
             />
                 );
 

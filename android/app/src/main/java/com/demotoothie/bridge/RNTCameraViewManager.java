@@ -27,6 +27,7 @@ import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
 
 import java.util.Map;
+import java.util.Objects;
 
 import tv.danmaku.ijk.media.widget.IjkVideoView;
 
@@ -51,9 +52,10 @@ public class RNTCameraViewManager extends SimpleViewManager<RNTCameraView> {
     @NonNull
     @Override
     protected RNTCameraView createViewInstance(@NonNull ThemedReactContext reactContext) {
-        if(mRntCameraView == null){
-            mRntCameraView = new RNTCameraView(reactApplicationContext);;
+        if (mRntCameraView == null) {
+            mRntCameraView = new RNTCameraView(reactApplicationContext);
         }
+        mRntCameraView.init();
         return mRntCameraView;
     }
 
@@ -69,7 +71,7 @@ public class RNTCameraViewManager extends SimpleViewManager<RNTCameraView> {
                 MessageCenter.getInstance().stop();
                 rntCameraView.stopVideo();
             }
-            Log.d(RNTCameraView,"val "+rntCameraView);
+            Log.d(RNTCameraView, "val " + rntCameraView);
         } catch (
                 Exception e) {
             e.printStackTrace();
@@ -79,15 +81,58 @@ public class RNTCameraViewManager extends SimpleViewManager<RNTCameraView> {
     }
 
     @ReactProp(name = "click")
-    public void clickPic(RNTCameraView rntCameraView, int click){
-        Toast.makeText(reactApplicationContext, "click : "+click, Toast.LENGTH_LONG).show();
-        rntCameraView.takePhoto(click);
+    public void clickPic(RNTCameraView rntCameraView, int click) {
+        Toast.makeText(reactApplicationContext, "click : " + click, Toast.LENGTH_LONG).show();
+        if (click != 0) {
+            Objects.requireNonNull(reactApplicationContext.getCurrentActivity()).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    rntCameraView.takePhoto(click);
+
+                }
+            });
+        }
+
+    }
+
+    @ReactProp(name = "isRecording")
+    public void recordVideo(RNTCameraView rntCameraView, boolean isRecording) {
+        Toast.makeText(reactApplicationContext, "isRecording : " + isRecording, Toast.LENGTH_LONG).show();
+        Objects.requireNonNull(reactApplicationContext.getCurrentActivity()).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(isRecording)
+                rntCameraView.recordVideo();
+
+            }
+        });
+
+    }
+
+    @ReactProp(name = "isRotate")
+    public void setIsRotate(RNTCameraView rntCameraView, boolean isRotate) {
+        try {
+            Toast.makeText(reactApplicationContext, "setIsRotate : " + isRotate, Toast.LENGTH_SHORT).show();
+            Objects.requireNonNull(reactApplicationContext.getCurrentActivity()).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    rntCameraView.rotateVideo();
+
+                }
+            });
+
+
+        } catch (
+                Exception e) {
+            e.printStackTrace();
+            Log.e(RNTCameraView, "Connect called err " + e);
+        }
 
     }
 
     @Override
     public Map getExportedCustomBubblingEventTypeConstants() {
-        Toast.makeText(reactApplicationContext,"getExportedCustomDirectEventTypeConstants :",Toast.LENGTH_LONG).show();
+        Toast.makeText(reactApplicationContext, "getExportedCustomDirectEventTypeConstants :", Toast.LENGTH_LONG).show();
 
         return MapBuilder.builder()
                 .put(
@@ -95,8 +140,14 @@ public class RNTCameraViewManager extends SimpleViewManager<RNTCameraView> {
                         MapBuilder.of(
                                 "phasedRegistrationNames",
                                 MapBuilder.of("bubbled", "onClickPic")))
+                .put(
+                        "onRecordVideo",
+                        MapBuilder.of(
+                                "phasedRegistrationNames",
+                                MapBuilder.of("bubbled", "onRecordVideo")))
                 .build();
 
     }
+
 
 }
