@@ -22,6 +22,7 @@ import com.demotoothie.application.Settings;
 import com.demotoothie.comm.MessageCenter;
 import com.demotoothie.comm.TCPMessage;
 import com.demotoothie.eventbus.BusProvider;
+import com.demotoothie.widget.freespacemonitor.FreeSpaceMonitor;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
@@ -46,6 +47,7 @@ import java.util.Objects;
 
 import static com.demotoothie.application.Config.RECONNECTION_INTERVAL;
 import static tv.danmaku.ijk.media.widget.IRenderView.AR_ASPECT_FIT_PARENT;
+
 
 public class RNTCameraView extends IjkVideoView {
 
@@ -78,7 +80,7 @@ public class RNTCameraView extends IjkVideoView {
 //    private Chronometer mChronometer;
 
     // 剩余空间监控
-    private com.example.sdkpoc.buildwin.common.widget.freespacemonitor.FreeSpaceMonitor mFreeSpaceMonitor;
+    private FreeSpaceMonitor mFreeSpaceMonitor;
 
     // 其他
     private static String videoFilePath = null; // 用以保存录制视频文件的路径
@@ -505,7 +507,7 @@ public class RNTCameraView extends IjkVideoView {
                         showChronometer(true);
 //                        mRecordVideoButton.setImageResource(R.mipmap.con_video_h);
                         // 开始监控剩余空间
-                        mFreeSpaceMonitor.setListener(new com.example.sdkpoc.buildwin.common.widget.freespacemonitor.FreeSpaceMonitor.FreeSpaceCheckerListener() {
+                        mFreeSpaceMonitor.setListener(new FreeSpaceMonitor.FreeSpaceCheckerListener() {
                             @Override
                             public void onExceed() {
                                 // 如果剩余空间低于阈值，停止录像
@@ -529,6 +531,10 @@ public class RNTCameraView extends IjkVideoView {
                                 noteText + fileName,
                                 Toast.LENGTH_SHORT
                         ).show();
+
+                        HashMap<String, String> data = new HashMap<>();
+                        data.put("videoPath", videoFilePath + "/" + fileName);
+                        reactNativeEvent("onRecordVideo", data);
 //                        mRecordVideoButton.setImageResource(R.mipmap.con_video);
                         // 隐藏录像计时器
                         showChronometer(false);
@@ -717,19 +723,23 @@ public class RNTCameraView extends IjkVideoView {
     }
 
     /**
-     * 录像
+     * To stop recording on button click
      */
+    public void stopRecording() {
+        if (recording) {
+            this.stopRecordVideo();
+        }
+    }
+
+
     public void recordVideo() {
         if (recording) {
             this.stopRecordVideo();
         } else {
-            mFreeSpaceMonitor = new com.example.sdkpoc.buildwin.common.widget.freespacemonitor.FreeSpaceMonitor(context);
+            String videoFilePath = Utilities.getVideoDirPath(context.getApplicationContext());
+            String videoFileName = Utilities.getMediaFileName();
+            mFreeSpaceMonitor = new FreeSpaceMonitor(context.getApplicationContext());
             if (mFreeSpaceMonitor.checkFreeSpace()) {
-                String videoFilePath = Utilities.getVideoDirPath(context);
-                String videoFileName = Utilities.getMediaFileName();
-                HashMap<String, String> data = new HashMap<>();
-                data.put("videoPath", videoFilePath + "/" + videoFileName);
-                reactNativeEvent("onRecordVideo", data);
                 // Start to record video
                 try {
                     this.startRecordVideo(videoFilePath, videoFileName, -1, -1);
@@ -745,6 +755,7 @@ public class RNTCameraView extends IjkVideoView {
             }
         }
     }
+
 
     /**
      * 弹出分辨率选择列表
@@ -1081,10 +1092,12 @@ public class RNTCameraView extends IjkVideoView {
 
     public void rotateVideo() {
         // Rotate the screen
-        this.setRotation180(!this.isRotation180());
         // 每次旋转90度，顺时针
         mRotationDegree += 90;
         mRotationDegree %= 360;
         RNTCameraView.this.setVideoRotation(mRotationDegree);
     }
+
+
+
 }

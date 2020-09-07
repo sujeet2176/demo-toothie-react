@@ -62,7 +62,6 @@ public class RNTCameraViewManager extends SimpleViewManager<RNTCameraView> {
     @ReactProp(name = "isConnected")
     public void setIsConnected(RNTCameraView rntCameraView, boolean isConnected) {
         try {
-            Toast.makeText(reactApplicationContext, "Connect src : " + isConnected, Toast.LENGTH_SHORT).show();
             Log.d(RNTCameraView, "Connect called " + isConnected);
             if (isConnected) {
                 MessageCenter.getInstance().start();
@@ -82,7 +81,6 @@ public class RNTCameraViewManager extends SimpleViewManager<RNTCameraView> {
 
     @ReactProp(name = "click")
     public void clickPic(RNTCameraView rntCameraView, int click) {
-        Toast.makeText(reactApplicationContext, "click : " + click, Toast.LENGTH_LONG).show();
         if (click != 0) {
             Objects.requireNonNull(reactApplicationContext.getCurrentActivity()).runOnUiThread(new Runnable() {
                 @Override
@@ -96,13 +94,18 @@ public class RNTCameraViewManager extends SimpleViewManager<RNTCameraView> {
     }
 
     @ReactProp(name = "isRecording")
-    public void recordVideo(RNTCameraView rntCameraView, boolean isRecording) {
+    public void recordVideo(RNTCameraView rntCameraView, Boolean isRecording) {
         Toast.makeText(reactApplicationContext, "isRecording : " + isRecording, Toast.LENGTH_LONG).show();
         Objects.requireNonNull(reactApplicationContext.getCurrentActivity()).runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(isRecording)
-                rntCameraView.recordVideo();
+                if (isRecording != null) {
+                    if (isRecording) {
+                        rntCameraView.recordVideo();
+                    } else {
+                        rntCameraView.stopRecording();
+                    }
+                }
 
             }
         });
@@ -110,13 +113,15 @@ public class RNTCameraViewManager extends SimpleViewManager<RNTCameraView> {
     }
 
     @ReactProp(name = "isRotate")
-    public void setIsRotate(RNTCameraView rntCameraView, boolean isRotate) {
+    public void setIsRotate(RNTCameraView rntCameraView, Boolean isRotate) {
         try {
             Toast.makeText(reactApplicationContext, "setIsRotate : " + isRotate, Toast.LENGTH_SHORT).show();
             Objects.requireNonNull(reactApplicationContext.getCurrentActivity()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    rntCameraView.rotateVideo();
+                    if (isRotate != null) {
+                        rntCameraView.rotateVideo();
+                    }
 
                 }
             });
@@ -132,7 +137,6 @@ public class RNTCameraViewManager extends SimpleViewManager<RNTCameraView> {
 
     @Override
     public Map getExportedCustomBubblingEventTypeConstants() {
-        Toast.makeText(reactApplicationContext, "getExportedCustomDirectEventTypeConstants :", Toast.LENGTH_LONG).show();
 
         return MapBuilder.builder()
                 .put(

@@ -25,29 +25,21 @@ import {
 const App = () => {
   const [isConnected, setIsConnected] = useState(true);
   const [click, setClick] = useState(0);
-  const [isRotate , setRotate ] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
+  const [isRotate , setRotate ] = useState(null);
+  const [isRecording, setIsRecording] = useState(null);
   const camRef = useRef();
-  const onCapturePress = () => {
-    // alert('Connect called')
-    // NativeModules.ToastExample.show('Awesome', NativeModules.ToastExample.SHORT);
-    // NativeModules.RNTCameraView.connect('test');
-    // CameraView.connect('test');
-    
-    setClick(1)
 
-  //   try{
-  //   } catch (err) {
-  //     // error(err);
-  //     console.log(err);
-  // }
-    // camRef.current.captureImage();
+ 
+  const onCapturePress = () => {
+     // To click photo
+    setClick(1)
   };
 
   const getPhotoPath = (path) => {
 
   if(path){
     console.log('getPhotoPath',path);
+    alert(path)
     setClick(0)
   }
   }
@@ -56,18 +48,30 @@ const App = () => {
 
     if(path){
       console.log('getVideoPath',path);
+      alert(path)
     }
     }
 
+    // To start or stop video recording
   const onRecordPress = async () => {
 
-    // await NativeModules.RNTCameraView.reconnect();
-    // camRef.current.recordVideo();
-    setIsRecording(!isRecording)
+    if(isRecording != null){
+      setIsRecording(!isRecording)
+    }else{
+      setIsRecording(true)
+    }
+    
   };
+
+  // To rotate CameraView 
   const onRotatePress = () => {
-    // camRef.current.stopRecording();
-    setRotate(!isRotate)
+  
+    if(isRotate != null){
+      setRotate(!isRotate)
+    }else{
+      setRotate(true)
+    }
+    
   };
   return (
     <>
@@ -93,7 +97,7 @@ const App = () => {
             <Text>{'Click'}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={onRecordPress} style={styles.button}>
-            <Text>{'Record Video'}</Text>
+            <Text>{(isRecording)?'Stop Recording':'Start Recording'}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={onRotatePress} style={styles.button}>
             <Text>{'Rotate Video'}</Text>

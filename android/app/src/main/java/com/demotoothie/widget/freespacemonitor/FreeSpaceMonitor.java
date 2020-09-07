@@ -1,4 +1,4 @@
-package com.example.sdkpoc.buildwin.common.widget.freespacemonitor;
+package com.demotoothie.widget.freespacemonitor;
 
 import android.content.Context;
 
