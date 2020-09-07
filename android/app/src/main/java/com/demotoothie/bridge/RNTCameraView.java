@@ -1,7 +1,6 @@
 package com.demotoothie.bridge;
 
 import android.Manifest;
-import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaScannerConnection;
@@ -1096,6 +1095,27 @@ public class RNTCameraView extends IjkVideoView {
         mRotationDegree += 90;
         mRotationDegree %= 360;
         RNTCameraView.this.setVideoRotation(mRotationDegree);
+    }
+
+    // To play saved video in the local storage
+    public void playSavedVideo(String mVideoPath, Uri mVideoUri){
+
+        if (mVideoPath != null)
+           setVideoPath(mVideoPath);
+        else if (mVideoUri != null)
+            setVideoURI(mVideoUri);
+        else {
+            Log.e(RNTCameraView, "Null Data Source\n");
+            return;
+        }
+        start();
+    }
+
+    // To stop playing saved video in the local storage
+    public void stopPlayingSavedVideo(){
+        stopPlayback();
+        release(true);
+        stopBackgroundPlay();
     }
 
 

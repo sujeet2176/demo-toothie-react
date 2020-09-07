@@ -95,7 +95,6 @@ public class RNTCameraViewManager extends SimpleViewManager<RNTCameraView> {
 
     @ReactProp(name = "isRecording")
     public void recordVideo(RNTCameraView rntCameraView, Boolean isRecording) {
-        Toast.makeText(reactApplicationContext, "isRecording : " + isRecording, Toast.LENGTH_LONG).show();
         Objects.requireNonNull(reactApplicationContext.getCurrentActivity()).runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -115,7 +114,6 @@ public class RNTCameraViewManager extends SimpleViewManager<RNTCameraView> {
     @ReactProp(name = "isRotate")
     public void setIsRotate(RNTCameraView rntCameraView, Boolean isRotate) {
         try {
-            Toast.makeText(reactApplicationContext, "setIsRotate : " + isRotate, Toast.LENGTH_SHORT).show();
             Objects.requireNonNull(reactApplicationContext.getCurrentActivity()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
